@@ -1,20 +1,18 @@
-C_COMP     = gcc
-OBJC_COMP  = clang
 
 detected_OS := $(shell uname -s)
 
 # app src files
 
-APP_C_SRC    = $(shell find . -type f -name '*.c')
-APP_OBJ      = $(APP_C_SRC:.c=.o)
+APP_C_SRC    = $(shell find . -type f -name '*.cpp')
+APP_OBJ      = $(APP_C_SRC:.cpp=.o)
 APP_FLAGS    = -Wall
 APP_INC      = . utils
 
 # libraries
 
-LIB_PKG   = 
-LIB_INC   = 
-LIB_LPATH = 
+LIB_PKG   =
+LIB_INC   =
+LIB_LPATH =
 LIB_LD    = -lm
 
 # about C_COMP
@@ -29,14 +27,14 @@ LDFLAGS = $(foreach d, $(LIB_LPATH), -L$d) $(foreach d, $(LIB_PKG), `pkg-config 
 # targets #
 ###########
 
-%.o : %.c
-	$(C_COMP) $(CFLAGS) -c -o $@ $<
+%.o : %.cpp
+	$(CXX) $(CFLAGS) -c -o $@ $<
 
 %.o : %.m
-	$(C_COMP) $(CFLAGS) $(OBJC_FLAGS) -c -o $@ $<
+	$(CXX) $(CFLAGS) $(OBJC_FLAGS) -c -o $@ $<
 
 all: $(APP_OBJ)
-	$(C_COMP) $(APP_OBJ) $(OBJC_FLAGS) $(LDFLAGS) -o deplacement
+	$(CXX) $(APP_OBJ) $(OBJC_FLAGS) $(LDFLAGS) -o deplacement
 
 .PHONY: clean
 
