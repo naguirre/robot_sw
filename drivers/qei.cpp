@@ -1,11 +1,11 @@
 #include <drivers/qei.h>
 
-void QEI_Init(QEI * this, QEI_CHANNEL channel)
+QEI::QEI(QEI_CHANNEL channel)
 {
   return;
 }
 
-uint16_t QEI_GetNombrePas(QEI * this)
+uint16_t QEI::GetNombrePas()
 {
 	return 0;
 }

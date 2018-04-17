@@ -1,5 +1,5 @@
-#ifndef Robot2_0_pwm_h
-#define Robot2_0_pwm_h
+#ifndef __PWM_H__
+#define __PWM_H__
 
 /*************************************/
 /* TYPES, TYPEDEFS, MACROS, DEFINES  */
@@ -16,17 +16,14 @@ typedef enum{
 /* OBJET STRUCTURE                   */
 /*************************************/
 
-typedef struct{
+class PWM
+{
     PWM_CHANNEL channel;
     float       rapportCyclique;
-}PWM;
 
-/*************************************/
-/* FONCTIONS                         */
-/*************************************/
+    PWM(PWM_CHANNEL channel);
 
-void PWM_Init(PWM * this, PWM_CHANNEL channel);
+    void ChangerRapportCyclique(float rapport);
+};
 
-void PWM_ChangerRapportCyclique(PWM * this, float rapport);
-
-#endif
+#endif /* __PWM_H__ */

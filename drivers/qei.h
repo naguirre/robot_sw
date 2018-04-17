@@ -1,5 +1,5 @@
-#ifndef Robot2_0_qei_h
-#define Robot2_0_qei_h
+#ifndef __QEI_H__
+#define __QEI_H__
 
 #include <types.h>
 
@@ -18,16 +18,13 @@ typedef enum{
 /* OBJET STRUCTURE                   */
 /*************************************/
 
-typedef struct{
+class QEI
+{
     QEI_CHANNEL channel;
-}QEI;
 
-/*************************************/
-/* FONCTIONS                         */
-/*************************************/
+    QEI(QEI_CHANNEL channel);
 
-void QEI_Init(QEI * this, QEI_CHANNEL channel);
+    uint16_t GetNombrePas();
+};
 
-uint16_t QEI_GetNombrePas(QEI * this);
-
-#endif
+#endif /* __QEI_H__ */

@@ -1,5 +1,5 @@
-#ifndef Robot2_0_gpio_h
-#define Robot2_0_gpio_h
+#ifndef __GPIO_H__
+#define __GPIO_H__
 
 /*************************************/
 /* TYPES, TYPEDEFS, MACROS, DEFINES  */
@@ -30,23 +30,20 @@ typedef enum{
 /* OBJET STRUCTURE                   */
 /*************************************/
 
-typedef struct{
+class GPIO
+{
     GPIO_PORT port;
     GPIO_PIN  pin;
     GPIO_DIRECTION direction;
     GPIO_ETAT etat;
-}GPIO;
 
-/*************************************/
-/* FONCTIONS                         */
-/*************************************/
+    GPIO(GPIO_PORT port, GPIO_PIN pin, GPIO_DIRECTION direction);
 
-void GPIO_Init(GPIO * this, GPIO_PORT port, GPIO_PIN pin, GPIO_DIRECTION direction);
+    GPIO_ETAT Read();
 
-GPIO_ETAT GPIO_Read(GPIO * this);
+    void Write(GPIO_ETAT etat);
 
-void GPIO_Write(GPIO * this, GPIO_ETAT etat);
+    void Toggle();
+};
 
-void GPIO_Toggle(GPIO * this);
-
-#endif
+#endif /* __GPIO_H__ */
