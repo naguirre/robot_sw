@@ -3,47 +3,37 @@
 #define CODEUR_NB_PAS       32
 #define CODEUR_REDUCTEUR    1.0
 
-DEPLACEMENT_INTERFACES interfaces;
-static DEPLACEMENT_INTERFACES * this = &interfaces;
-
-void DEPLACEMENT_INTERFACES_Init(float periode)
+DEPLACEMENT_INTERFACES::DEPLACEMENT_INTERFACES(float periode)
 {
-    static BOOL isInit = FALSE;
-    
-    if(!isInit)
-    {
-        CODEUR_Init(&this->codeurs[DEPLACEMENT_MOTEUR_DROITE], DEPLACEMENT_MOTEUR_DROITE, CODEUR_NB_PAS, CODEUR_REDUCTEUR, periode);
-        CODEUR_Init(&this->codeurs[DEPLACEMENT_MOTEUR_GAUCHE], DEPLACEMENT_MOTEUR_GAUCHE, CODEUR_NB_PAS, CODEUR_REDUCTEUR, periode);
-        PONT_H_Init(&this->pontsH[DEPLACEMENT_MOTEUR_DROITE], DEPLACEMENT_MOTEUR_DROITE);
-        PONT_H_Init(&this->pontsH[DEPLACEMENT_MOTEUR_GAUCHE], DEPLACEMENT_MOTEUR_GAUCHE);
-        isInit = TRUE;
-    }
+    codeurs[DEPLACEMENT_MOTEUR_DROITE] = new CODEUR(DEPLACEMENT_MOTEUR_DROITE, CODEUR_NB_PAS, CODEUR_REDUCTEUR, periode);
+    codeurs[DEPLACEMENT_MOTEUR_GAUCHE] = new CODEUR(DEPLACEMENT_MOTEUR_GAUCHE, CODEUR_NB_PAS, CODEUR_REDUCTEUR, periode);
+    pontsH[DEPLACEMENT_MOTEUR_DROITE] = new PONT_H(DEPLACEMENT_MOTEUR_DROITE);
+    pontsH[DEPLACEMENT_MOTEUR_GAUCHE] = new PONT_H(DEPLACEMENT_MOTEUR_GAUCHE);
 }
 
-void DEPLACEMENT_INTERFACES_ActualiserEtat()
+void DEPLACEMENT_INTERFACES::ActualiserEtat()
 {
-    CODEUR_ActualiserEtat(&this->codeurs[DEPLACEMENT_MOTEUR_DROITE]);
-    CODEUR_ActualiserEtat(&this->codeurs[DEPLACEMENT_MOTEUR_GAUCHE]);
+    codeurs[DEPLACEMENT_MOTEUR_DROITE]->ActualiserEtat();
+    codeurs[DEPLACEMENT_MOTEUR_GAUCHE]->ActualiserEtat();
 }
 
-float DEPLACEMENT_INTERFACES_GetAngleBrut(DEPLACEMENT_MOTEUR moteur)
+float DEPLACEMENT_INTERFACES::GetAngleBrut(DEPLACEMENT_MOTEUR moteur)
 {
-    return CODEUR_GetAngleBrut(&this->codeurs[moteur]);
+    return codeurs[moteur]->GetAngleBrut();
 }
 
-void DEPLACEMENT_INTERFACES_SetAngleBrut(DEPLACEMENT_MOTEUR moteur, float angle)
+void DEPLACEMENT_INTERFACES::SetAngleBrut(DEPLACEMENT_MOTEUR moteur, float angle)
 {
-    CODEUR_SetAngleBrut(&this->codeurs[moteur], angle);
+    codeurs[moteur]->SetAngleBrut(angle);
 }
 
-float DEPLACEMENT_INTERFACES_GetVitesseAngulaire(DEPLACEMENT_MOTEUR moteur)
+float DEPLACEMENT_INTERFACES::GetVitesseAngulaire(DEPLACEMENT_MOTEUR moteur)
 {
-    return CODEUR_GetVitesseAngulaire(&this->codeurs[moteur]);
+    return codeurs[moteur]->GetVitesseAngulaire();
 }
 
-void DEPLACEMENT_INTERFACES_SetPuissance(DEPLACEMENT_MOTEUR moteur, float puissance)
+void DEPLACEMENT_INTERFACES::SetPuissance(DEPLACEMENT_MOTEUR moteur, float puissance)
 {
     puissance = MATHS_Saturer(puissance, 1.0);
-    PONT_H_ChangerPuissance(&this->pontsH[moteur], puissance);
+    pontsH[moteur]->ChangerPuissance(puissance);
 }
-

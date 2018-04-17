@@ -1,67 +1,72 @@
-#include <app/asservissement.h>
-#include <stdio.h>
+#include "app/asservissement.h"
+#include <iostream>
 
-void ASSERVISSEMENT_Init(ASSERVISSEMENT * this, float periode, float vitesseMax, float accelerationMax,
+ASSERVISSEMENT::ASSERVISSEMENT(loat periode, float vitesseMax, float accelerationMax,
                          float commandeMaxVitesse,  float kpVitesse,  float kiVitesse,
                          float commandeMaxPosition, float kpPosition, float kiPosition)
 {
-    PID_Init(&this->membres.pidPosition, periode, kpVitesse, kiVitesse, 0.0, commandeMaxPosition);
+    PID_Init(&membres.pidPosition, periode, kpVitesse, kiVitesse, 0.0, commandeMaxPosition);
 
-    PID_Init(&this->membres.pidVitesse, periode, kpVitesse, kiVitesse, 0.0, commandeMaxVitesse);
-    
-    this->parametres.periode         = periode;
-    this->parametres.vitesseMax      = vitesseMax;
-    this->parametres.accelerationMax = accelerationMax;
+    PID_Init(&membres.pidVitesse, periode, kpVitesse, kiVitesse, 0.0, commandeMaxVitesse);
+
+    parametres.periode         = periode;
+    parametres.vitesseMax      = vitesseMax;
+    parametres.accelerationMax = accelerationMax;
 }
 
-float ASSERVISSEMENT_Vitesse(ASSERVISSEMENT * this, float mesureVitesse)
+ASSERVISSEMENT::~ASSERVISSEMENT()
+{
+
+}
+
+float ASSERVISSEMENT::Vitesse(float mesureVitesse)
 {
     //On récupère la consigne de vitesse précédente pour limiter l'accélération
-    float consigneVitessePrecedente = PID_GetConsigne(&this->membres.pidVitesse);
+    float consigneVitessePrecedente = PID_GetConsigne(&membres.pidVitesse);
     //La consigne de vitesse est la consigne de l'asservissement global
-    float consigneVitesse = this->consigne.valeur;
+    float consigneVitesse = consigne.valeur;
     //La consigne de vitesse est saturée et de dérivée (accélération) saturée
-    consigneVitesse = MATHS_Saturer(consigneVitesse, this->parametres.vitesseMax);
-    consigneVitesse = MATHS_SaturerDerivee(consigneVitesse, consigneVitessePrecedente, this->parametres.periode,
-                                           this->parametres.accelerationMax);
-    
-    return PID_Run(&this->membres.pidVitesse, consigneVitesse, mesureVitesse);
+    consigneVitesse = MATHS_Saturer(consigneVitesse, parametres.vitesseMax);
+    consigneVitesse = MATHS_SaturerDerivee(consigneVitesse, consigneVitessePrecedente, parametres.periode,
+                                           parametres.accelerationMax);
+
+    return PID_Run(&membres.pidVitesse, consigneVitesse, mesureVitesse);
 }
 
 
-float ASSERVISSEMENT_Position(ASSERVISSEMENT * this, float mesureVitesse, float mesurePosition)
+float ASSERVISSEMENT::Position(float mesureVitesse, float mesurePosition)
 {
     //La consigne de position est la consigne de l'asservissement global
-    float consignePosition = this->consigne.valeur;
+    float consignePosition = consigne.valeur;
     //On récupère la consigne de vitesse précédente pour limiter l'accélération
-    float consigneVitessePrecedente = PID_GetConsigne(&this->membres.pidVitesse);
+    float consigneVitessePrecedente = PID_GetConsigne(&membres.pidVitesse);
     //La consigne de vitesse est la commande du PID de position
-    float consigneVitesse = this->parametres.vitesseMax*PID_Run(&this->membres.pidPosition, consignePosition, mesurePosition);
+    float consigneVitesse = parametres.vitesseMax*PID_Run(&membres.pidPosition, consignePosition, mesurePosition);
     //La consigne de vitesse est saturée et de dérivée (accélération) saturée
-    consigneVitesse = MATHS_Saturer(consigneVitesse, this->parametres.vitesseMax);
-    consigneVitesse = MATHS_SaturerDerivee(consigneVitesse, consigneVitessePrecedente, this->parametres.periode,
-                                           this->parametres.accelerationMax);
-    
-    return PID_Run(&this->membres.pidVitesse, consigneVitesse, mesureVitesse);
+    consigneVitesse = MATHS_Saturer(consigneVitesse, parametres.vitesseMax);
+    consigneVitesse = MATHS_SaturerDerivee(consigneVitesse, consigneVitessePrecedente, parametres.periode,
+                                           parametres.accelerationMax);
+
+    return PID_Run(&membres.pidVitesse, consigneVitesse, mesureVitesse);
 }
 
-void ASSERVISSEMENT_SetVitesseMax(ASSERVISSEMENT * this, float vitesseMax)
+void ASSERVISSEMENT::SetVitesseMax(float vitesseMax)
 {
-    this->parametres.vitesseMax = vitesseMax;
+    parametres.vitesseMax = vitesseMax;
 }
 
-void ASSERVISSEMENT_SetConsigne(ASSERVISSEMENT * this, ASSERVISSEMENT_TYPE type, float valeur)
+void ASSERVISSEMENT::SetConsigne(ASSERVISSEMENT_TYPE type, float valeur)
 {
-    this->consigne.typeAsserv = type;
-    this->consigne.valeur = valeur;
+    consigne.typeAsserv = type;
+    consigne.valeur = valeur;
 }
 
-float ASSERVISSEMENT_GetConsigneValeur(ASSERVISSEMENT * this)
+float ASSERVISSEMENT::GetConsigneValeur()
 {
-    return this->consigne.valeur;
+    return consigne.valeur;
 }
 
-float ASSERVISSEMENT_Run(ASSERVISSEMENT * this, float mesureVitesse, float mesurePosition)
+float ASSERVISSEMENT::Run(float mesureVitesse, float mesurePosition)
 {
     if(this->consigne.typeAsserv == ASSERVISSEMENT_POSITION)
     {
@@ -71,7 +76,7 @@ float ASSERVISSEMENT_Run(ASSERVISSEMENT * this, float mesureVitesse, float mesur
     {
         return ASSERVISSEMENT_Vitesse(this, mesureVitesse);
     }
-    
+
     //Défaut
     return 0.0;
 }

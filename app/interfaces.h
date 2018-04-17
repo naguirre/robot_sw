@@ -1,5 +1,5 @@
-#ifndef INTERFACES_H
-#define INTERFACES_H
+#ifndef __INTERFACES_H__
+#define __INTERFACES_H__
 
 /*************************************/
 /* INCLUDES                          */
@@ -26,26 +26,23 @@ typedef enum{
 /* OBJET STRUCTURE                   */
 /*************************************/
 
-typedef struct
+class DEPLACEMENT_INTERFACES
 {
-    CODEUR codeurs[DEPLACEMENT_NB_MOTEURS];
-    PONT_H pontsH[DEPLACEMENT_NB_MOTEURS];
-}DEPLACEMENT_INTERFACES;
+public:
+    CODEUR *codeurs[DEPLACEMENT_NB_MOTEURS];
+    PONT_H *pontsH[DEPLACEMENT_NB_MOTEURS];
 
-/*************************************/
-/* FONCTIONS                         */
-/*************************************/
+    DEPLACEMENT_INTERFACES(float periode);
 
-void DEPLACEMENT_INTERFACES_Init(float periode);
+    void ActualiserEtat();
 
-void DEPLACEMENT_INTERFACES_ActualiserEtat();
+    float GetAngleBrut(DEPLACEMENT_MOTEUR moteur);
 
-float DEPLACEMENT_INTERFACES_GetAngleBrut(DEPLACEMENT_MOTEUR moteur);
+    void SetAngleBrut(DEPLACEMENT_MOTEUR moteur, float angle);
 
-void DEPLACEMENT_INTERFACES_SetAngleBrut(DEPLACEMENT_MOTEUR moteur, float angle);
+    float GetVitesseAngulaire(DEPLACEMENT_MOTEUR moteur);
 
-float DEPLACEMENT_INTERFACES_GetVitesseAngulaire(DEPLACEMENT_MOTEUR moteur);
+    void SetPuissance(DEPLACEMENT_MOTEUR moteur, float puissance);
+};
 
-void DEPLACEMENT_INTERFACES_SetPuissance(DEPLACEMENT_MOTEUR moteur, float puissance);
-
-#endif
+#endif /* __INTERFACES_H__ */

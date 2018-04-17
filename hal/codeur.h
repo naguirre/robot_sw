@@ -1,9 +1,9 @@
-#ifndef CODEUR_H
-#define CODEUR_H
+#ifndef __CODEUR_H__
+#define __CODEUR_H__
 
 #include <types.h>
 
-#include <drivers/qei.h>
+#include "drivers/qei.h"
 
 /*************************************/
 /* HARDWARE MAPPING                  */
@@ -16,7 +16,9 @@ static const QEI_CHANNEL QEI_CHANNELS[4] = {QEI0, QEI1, QEI2, QEI3};
 /* OBJET STRUCTURE                   */
 /*************************************/
 
-typedef struct{
+class CODEUR
+{
+public:
     QEI  qei;   //Abstraction du périph QEI utilisé par le codeur
     struct{
         float    reducteur;      //Réducteur entre l'arbre de sortie du moteur et l'axe du codeur
@@ -29,22 +31,18 @@ typedef struct{
         float    angleReel;          //angle ramené à ]-180; 180]
         float    vitesseAngulaire;   //en degré/seconde
     }etat;
-}CODEUR;
 
-/*************************************/
-/* FONCTIONS                         */
-/*************************************/
+    CODEUR(uint8_t id, uint16_t nombrePasCodeur, float reducteur, float periode);
 
-void CODEUR_Init(CODEUR * this, uint8_t id, uint16_t nombrePasCodeur, float reducteur, float periode);
+    void ActualiserEtat();
 
-void CODEUR_ActualiserEtat(CODEUR * this);
+    float GetAngleBrut();
 
-float CODEUR_GetAngleBrut(CODEUR * this);
+    void SetAngleBrut(float Val);
 
-void CODEUR_SetAngleBrut(CODEUR * this, float Val);
+    float GetAngleReel();
 
-float CODEUR_GetAngleReel(CODEUR * this);
+    float GetVitesseAngulaire();
+};
 
-float CODEUR_GetVitesseAngulaire(CODEUR * this);
-
-#endif
+#endif /* __CODEUR_H__ */

@@ -1,52 +1,52 @@
 #include <hal/codeur.h>
 #include <maths/maths.h>
 
-void CODEUR_CalculerFacteurEchelle(CODEUR * this)
+void CODEUR::CalculerFacteurEchelle()
 {
-    this->parametres.facteurEchelle = 2.0 * PI / (4.0 * (float) (this->parametres.nombrePas) * this->parametres.reducteur);
+    parametres.facteurEchelle = 2.0 * PI / (4.0 * (float) (parametres.nombrePas) * parametres.reducteur);
 }
 
-void CODEUR_Init(CODEUR * this, uint8_t id, uint16_t nombrePasCodeur, float reducteur, float periode)
+CODEUR::CODEUR(uint8_t id, uint16_t nombrePasCodeur, float reducteur, float periode)
 {
-    this->etat.angleBrut = 0.0;
-    this->etat.angleReel = 0.0;
-    
-    this->parametres.nombrePas = nombrePasCodeur;
-    this->parametres.reducteur = reducteur;
-    this->parametres.periode   = periode;
-    
-    QEI_Init(&this->qei, QEI_CHANNELS[id]);
-    
+    etat.angleBrut = 0.0;
+    etat.angleReel = 0.0;
+
+    parametres.nombrePas = nombrePasCodeur;
+    parametres.reducteur = reducteur;
+    parametres.periode   = periode;
+
+    qei = QEI_Init(QEI_CHANNELS[id]);
+
     //Calcul de la distance représentée par un pas
-    CODEUR_CalculerFacteurEchelle(this);
+    CalculerFacteurEchelle();
 }
 
-void CODEUR_ActualiserEtat(CODEUR * this)
+void CODEUR::ActualiserEtat()
 {
-    float angleBrutPrecedent = this->etat.angleBrut;
-    
-    this->etat.angleBrut = (float)QEI_GetNombrePas(&this->qei)*this->parametres.facteurEchelle;
-    this->etat.angleReel = MATHS_mod2pi(this->etat.angleBrut);
-    this->etat.vitesseAngulaire = (this->etat.angleBrut - angleBrutPrecedent) / this->parametres.periode;
+    float angleBrutPrecedent = etat.angleBrut;
+
+    etat.angleBrut = (float)qei->GetNombrePas()*parametres.facteurEchelle;
+    etat.angleReel = MATHS_mod2pi(etat.angleBrut);
+    etat.vitesseAngulaire = (etat.angleBrut - angleBrutPrecedent) / parametres.periode;
 }
 
-float CODEUR_GetAngleBrut(CODEUR * this)
+float CODEUR::GetAngleBrut()
 {
-    return this->etat.angleBrut;
+    return etat.angleBrut;
 }
 
-void CODEUR_SetAngleBrut(CODEUR * this, float Val)
+void CODEUR::SetAngleBrut(float Val)
 {
-    this->etat.angleBrut = Val;
-    this->etat.vitesseAngulaire = 0.0;
+    etat.angleBrut = Val;
+    etat.vitesseAngulaire = 0.0;
 }
 
-float CODEUR_GetAngleReel(CODEUR * this)
+float CODEUR::GetAngleReel()
 {
-    return this->etat.angleReel;
+    return etat.angleReel;
 }
 
-float CODEUR_GetVitesseAngulaire(CODEUR * this)
+float CODEUR::GetVitesseAngulaire()
 {
-    return this->etat.vitesseAngulaire;
+    return etat.vitesseAngulaire;
 }

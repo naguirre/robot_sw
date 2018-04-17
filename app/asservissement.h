@@ -15,7 +15,7 @@ typedef enum{
 }ASSERVISSEMENT_TYPE;
 
 
-typedef struct
+class ASSERVISSEMENT
 {
     struct{
         PID  pidPosition;
@@ -30,25 +30,21 @@ typedef struct
         float   vitesseMax;
         float   accelerationMax;
     }parametres;
-}ASSERVISSEMENT;
 
+    ASSERVISSEMENT(float periode, float vitesseMax, float accelerationMax,
+                             float commandeMaxVitesse,  float kpVitesse,  float kiVitesse,
+                             float commandeMaxPosition, float kpPosition, float kiPosition);
+    ~ASSERVISSEMENT();
 
-/*************************************/
-/* FONCTIONS                         */
-/*************************************/
+    void SetConsigne(ASSERVISSEMENT_TYPE type, float valeur);
 
-void ASSERVISSEMENT_Init(ASSERVISSEMENT * this, float periode, float vitesseMax, float accelerationMax,
-                         float commandeMaxVitesse,  float kpVitesse,  float kiVitesse,
-                         float commandeMaxPosition, float kpPosition, float kiPosition);
+    void SetVitesseMax(float vitesseMax);
 
-void ASSERVISSEMENT_SetConsigne(ASSERVISSEMENT * this, ASSERVISSEMENT_TYPE type, float valeur);
+    ASSERVISSEMENT_TYPE GetConsigneType();
 
-void ASSERVISSEMENT_SetVitesseMax(ASSERVISSEMENT * this, float vitesseMax);
+    float GetConsigneValeur();
 
-ASSERVISSEMENT_TYPE MOTEUR_ASSERVISSEMENT_GetConsigneType(ASSERVISSEMENT * this);
-
-float ASSERVISSEMENT_GetConsigneValeur(ASSERVISSEMENT * this);
-
-float ASSERVISSEMENT_Run(ASSERVISSEMENT * this, float mesureVitesse, float mesurePosition);
+    float Run(float mesureVitesse, float mesurePosition);
+};
 
 #endif
