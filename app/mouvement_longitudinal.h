@@ -1,5 +1,5 @@
-#ifndef MOUVEMENT_LONGITUNDINAL_H
-#define MOUVEMENT_LONGITUNDINAL_H
+#ifndef __MOUVEMENT_LONGITUNDINAL_H__
+#define __MOUVEMENT_LONGITUNDINAL_H__
 
 /*************************************/
 /* INCLUDES                          */
@@ -32,14 +32,14 @@
 /* OBJET STRUCTURE                   */
 /*************************************/
 
-typedef struct
+class MOUVEMENT_LONGITUDINAL
 {
     struct{
         DEPLACEMENT_CONSIGNE_TYPE       type;
         DEPLACEMENT_CONSIGNE_PARAMETRES parametres;
     }consigne;
     struct{
-        MAE            mae;
+        MAE            *mae;
         ASSERVISSEMENT * asservissementLongitudinal;
         ASSERVISSEMENT * asservissementAngulaire;
     }membres;
@@ -47,20 +47,16 @@ typedef struct
         uint8_t nbBlocages;
         DEPLACEMENT_MOUVEMENT_ETAT etatMouvement;
     }etat;
-}MOUVEMENT_LONGITUDINAL;
 
-/*************************************/
-/* FONCTIONS                         */
-/*************************************/
+    MOUVEMENT_LONGITUDINAL(ASSERVISSEMENT * longitudinal, ASSERVISSEMENT * angulaire);
 
-void MOUVEMENT_LONGITUDINAL_Init(ASSERVISSEMENT * longitudinal, ASSERVISSEMENT * angulaire);
+    void Run();
 
-void MOUVEMENT_LONGITUDINAL_Run();
+    void Avancer(float distance);
 
-void MOUVEMENT_LONGITUDINAL_Avancer(float distance);
+    void TranslationInfinie(float vitesse);
 
-void MOUVEMENT_LONGITUDINAL_TranslationInfinie(float vitesse);
+    DEPLACEMENT_MOUVEMENT_ETAT GetEtatDeplacement();
+};
 
-DEPLACEMENT_MOUVEMENT_ETAT MOUVEMENT_LONGITUDINAL_GetEtatDeplacement();
-
-#endif
+#endif /* __MOUVEMENT_LONGITUNDINAL_H__ */
