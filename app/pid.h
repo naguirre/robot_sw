@@ -8,7 +8,7 @@
 /* OBJET STRUCTURE                   */
 /*************************************/
 
-typedef struct
+class PID
 {
     struct{
         float periode;      //periode du correcteur
@@ -25,36 +25,32 @@ typedef struct
         float consigne;         //consigne
         float mesure;           //mesure de la sortie
     }entrees;
-	
+
     struct{
         float erreur;
         float erreurPrecedente;     //pour equations de récurrence
         float commande;
         float commandePrecedente;   //pour equation de récurrence
     }etat;
-    
+
     struct{
         float commandeNormalisee;
     }sortie;
-} PID;
 
-/*************************************/
-/* FONCTIONS                         */
-/*************************************/
+    PID(float periode, float kp, float ki, float consigne, float commandeMax);
 
-void PID_Init(PID * this, float periode, float kp, float ki, float consigne, float commandeMax);
+    float PID_Run(float consigne, float mesure);
 
-float PID_Run(PID * this, float consigne, float mesure);
+    void PID_SetKp(float kp);
 
-void PID_SetKp(PID * this, float kp);
+    void PID_SetKi(float ki);
 
-void PID_SetKi(PID * this, float ki);
+    float PID_GetKp();
 
-float PID_GetKp(PID * this);
+    float PID_GetKi();
 
-float PID_GetKi(PID * this);
-
-float PID_GetConsigne(PID * this);
+    float PID_GetConsigne();
+};
 
 
 #endif

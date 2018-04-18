@@ -1,102 +1,101 @@
 #include <mae/mae.h>
 
-void MAE_Init(MAE * this, uint8_t etatInit, uint32_t dureeAttenteDebut, uint32_t dureeTimeout, uint8_t etatParDefaut, uint8_t nbEtats, MAE_FONCTION * fonctions, void * proprietaire)
+MAE::MAE(uint8_t etatInit, uint32_t dureeAttenteDebut, uint32_t dureeTimeout, uint8_t etatParDefaut, uint8_t nbEtats, MAE_FONCTION * fonctions, void * proprietaire)
 {
-    this->etatActuel         = etatInit;
-    this->etatPrecedent      = etatInit;
-    this->timer              = TICK_Get();
-    this->dureeAttenteDebut  = dureeAttenteDebut;
-    this->dureeTimeout       = dureeTimeout;
-    this->fonctions          = fonctions;
-    
-    this->etatParDefaut      = etatParDefaut;
-    this->nbEtats            = nbEtats;
-    
-    this->proprietaire       = proprietaire;
+    etatActuel         = etatInit;
+    etatPrecedent      = etatInit;
+    timer              = TICK_Get();
+    dureeAttenteDebut  = dureeAttenteDebut;
+    dureeTimeout       = dureeTimeout;
+    fonctions          = fonctions;
+
+    etatParDefaut      = etatParDefaut;
+    nbEtats            = nbEtats;
+
+    proprietaire       = proprietaire;
 }
 
-void MAE_Automate(MAE * this)
+void MAE::Automate(MAE * this)
 {
     //tempo de travail si besoin pour l automate
-    if (TICK_Get() - this->timer > this->dureeAttenteDebut)
+    if (TICK_Get() - timer > dureeAttenteDebut)
     {
-        this->enAttenteDebut = FALSE;
+        enAttenteDebut = FALSE;
     }
-    
-    if (TICK_Get() - this->timer > this->dureeTimeout)
+
+    if (TICK_Get() - timer > dureeTimeout)
     {
-        this->enTimeout = TRUE;
+        enTimeout = TRUE;
     }
-    
+
     //appel de la fonction correspondante a l etat courant
-    if (this->etatActuel < this->nbEtats)
+    if (etatActuel < nbEtats)
     {
-        this->fonctions[this->etatActuel](this->proprietaire);      //appel de la fonction correspondant à l'état en cours
+        fonctions[etatActuel](proprietaire);      //appel de la fonction correspondant à l'état en cours
     }
     else
     {
-        this->etatActuel = this->etatParDefaut; //au cas ou bug
+        etatActuel = etatParDefaut; //au cas ou bug
     }
 }
 
-void MAE_ChangerEtat(MAE * this, uint8_t nouvelEtat, uint32_t dureeAttenteDebut, uint32_t dureeTimeout)
+void MAE::ChangerEtat(uint8_t nouvelEtat, uint32_t dureeAttenteDebut, uint32_t dureeTimeout)
 {
-    if(nouvelEtat < this->nbEtats) //on verifie valeur correcte pour le nouvel etat
+    if(nouvelEtat < nbEtats) //on verifie valeur correcte pour le nouvel etat
     {
-        this->etatPrecedent     = this->etatActuel; // on sauvegarde l'etat courant
-        this->etatActuel        = nouvelEtat; //on renseigne le nouvel etat
-        this->premierPassage    = TRUE; //on positionne le booleen pour signifier le 1er acces a l etat
-        this->timer             = TICK_Get();
-        this->dureeAttenteDebut = dureeAttenteDebut;
-        this->dureeTimeout      = dureeTimeout;
-        this->enAttenteDebut    = TRUE;
-        this->enTimeout         = FALSE;
+        etatPrecedent     = etatActuel; // on sauvegarde l'etat courant
+        etatActuel        = nouvelEtat; //on renseigne le nouvel etat
+        premierPassage    = TRUE; //on positionne le booleen pour signifier le 1er acces a l etat
+        timer             = TICK_Get();
+        dureeAttenteDebut = dureeAttenteDebut;
+        dureeTimeout      = dureeTimeout;
+        enAttenteDebut    = TRUE;
+        enTimeout         = FALSE;
     }
     else
     {
-        this->etatActuel = this->etatParDefaut; //au cas ou valeur en dehors des etats connus
+        etatActuel = etatParDefaut; //au cas ou valeur en dehors des etats connus
     }
 }
 
-void MAE_EtatPrecedent(MAE * this)
+void MAE::EtatPrecedent(MAE * this)
 {
     uint8_t u8Tmp;
-    
+
     //permutation entre etatPrecedent et etatActuel
-    u8Tmp = this->etatPrecedent;
-    this->etatPrecedent = this->etatActuel;
-    this->etatActuel  = u8Tmp;
-    this->premierPassage = TRUE;    //on positionne le booleen pour signifier le 1er acces a l etat
+    u8Tmp = etatPrecedent;
+    etatPrecedent = etatActuel;
+    etatActuel  = u8Tmp;
+    premierPassage = TRUE;    //on positionne le booleen pour signifier le 1er acces a l etat
 }
 
-BOOL MAE_AttenteDebutTerminee(MAE * this)
+BOOL MAE::AttenteDebutTerminee(MAE * this)
 {
-    return !this->enAttenteDebut;
+    return !enAttenteDebut;
 }
 
-BOOL MAE_VerifierTimeout(MAE * this)
+BOOL MAE::VerifierTimeout(MAE * this)
 {
-    return this->enTimeout;
+    return enTimeout;
 }
 
-BOOL MAE_PremierPassage(MAE * this)
+BOOL MAE::PremierPassage(MAE * this)
 {
-    if(this->premierPassage)
+    if(premierPassage)
     {
-        this->premierPassage = FALSE;
+        premierPassage = FALSE;
         return TRUE;
     }else{
         return FALSE;
     }
 }
 
-uint8_t MAE_GetEtatActuel(MAE * this)
+uint8_t MAE::GetEtatActuel(MAE * this)
 {
-    return this->etatActuel;
+    return etatActuel;
 }
 
-uint8_t MAE_GetEtatPrecedent(MAE * this)
+uint8_t MAE::GetEtatPrecedent(MAE * this)
 {
-    return this->etatPrecedent;
+    return etatPrecedent;
 }
-
