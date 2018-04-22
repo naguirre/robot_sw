@@ -1,29 +1,28 @@
 #ifndef __PWM_H__
 #define __PWM_H__
 
-/*************************************/
-/* TYPES, TYPEDEFS, MACROS, DEFINES  */
-/*************************************/
-
-typedef enum{
-    PWM0,
-    PWM1,
-    PWM2,
-    PWM3,
-}PWM_CHANNEL;
-
-/*************************************/
-/* OBJET STRUCTURE                   */
-/*************************************/
-
-class PWM
+class Pwm
 {
-    PWM_CHANNEL channel;
-    float       rapportCyclique;
 
-    PWM(PWM_CHANNEL channel);
+public:
 
-    void ChangerRapportCyclique(float rapport);
+    typedef enum {
+        CHANNEL0,
+        CHANNEL1,
+        CHANNEL2,
+        CHANNEL3,
+    } Channel;
+
+    Pwm(Pwm::Channel channel);
+
+    void SetDutyCycle(float duty);
+
+private:
+
+    Pwm::Channel channel;
+
+    float dutyCycle;
+
 };
 
 #endif /* __PWM_H__ */

@@ -1,11 +1,11 @@
 #include <drivers/qei.h>
 
-QEI::QEI(QEI_CHANNEL channel)
+Qei::Qei(Qei::Channel channel)
 {
-  return;
+    return;
 }
 
-uint16_t QEI::GetNombrePas()
+uint16_t Qei::GetStepsCount()
 {
 	return 0;
 }

@@ -34,9 +34,9 @@ LDFLAGS = $(foreach d, $(LIB_LPATH), -L$d) $(foreach d, $(LIB_PKG), `pkg-config 
 	$(CXX) $(CFLAGS) $(OBJC_FLAGS) -c -o $@ $<
 
 all: $(APP_OBJ)
-	$(CXX) $(APP_OBJ) $(OBJC_FLAGS) $(LDFLAGS) -o deplacement
+	$(CXX) $(APP_OBJ) $(OBJC_FLAGS) $(LDFLAGS) -o robot
 
 .PHONY: clean
 
 clean:
-	rm -f $(APP_OBJ) deplacement
+	rm -f $(APP_OBJ) robot

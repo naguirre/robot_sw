@@ -3,23 +3,25 @@
 #include <unistd.h>
 
 #include <types.h>
-#include <timer/timer.h>
+#include <drivers/timer.h>
 
-#include <app/mouvement.h>
+#include <app/robot.h>
 
 TIMER ordonnanceur;
 
 #define PERIODE_ORDONNANCEUR        (0.01)
 
+Robot * robot;
+
 void run()
 {
-    MOUVEMENT_Run();
+    robot->Run();
 }
 
 void init()
 {
-    MOUVEMENT_Init(PERIODE_ORDONNANCEUR);
-    
+    robot = new Robot(PERIODE_ORDONNANCEUR);
+
     //On lance l'ordonnanceur
     TIMER_Init(&ordonnanceur, PERIODE_ORDONNANCEUR, &run);
 }
@@ -28,9 +30,9 @@ int main(int argc, char **argv)
 {
     init();
 
-    MOUVEMENT_Avancer(100.0);
-    
-    while (TRUE)
+    robot->Translate(100.0);
+
+    while (true)
     {
         usleep(10);
     }

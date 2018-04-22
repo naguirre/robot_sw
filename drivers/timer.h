@@ -1,5 +1,5 @@
-#ifndef _TIMER_H
-#define _TIMER_H
+#ifndef __TIMER_H__
+#define __TIMER_H__
 
 #include <types.h>
 
@@ -12,7 +12,7 @@ typedef struct{
 
     void (*callback) (void);
 
-    volatile BOOL elapsed;
+    volatile bool elapsed;
     uint32_t      endTime ;     ///< in SYS_TIME_TICKS
     uint32_t      duration;     ///< in SYS_TIME_TICKS
 
@@ -34,6 +34,6 @@ typedef struct
 
 void TIMER_Init (TIMER *, float duration, void (*callback)(void));
 
-BOOL TIMER_Scutation (TIMER *);
+bool TIMER_Scutation (TIMER *);
 
-#endif
+#endif /* __TIMER_H__ */

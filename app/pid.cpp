@@ -1,74 +1,75 @@
 #include <app/pid.h>
 
-void PID::CalculerPidDiscret()
+Pid::Pid(float period, float kp, float ki, float setPoint, float maxCommand)
 {
-    parametres.pidDiscret.num[0] = parametres.ki*parametres.periode/2 - parametres.kp;
-  	parametres.pidDiscret.num[1] = parametres.ki*parametres.periode/2 + parametres.kp;
-  	parametres.pidDiscret.den[0] = -1.0;
-  	parametres.pidDiscret.den[1] = 1.0;
+    this->settings.period     = period;
+    this->settings.maxCommand = maxCommand;
+    this->settings.kp         = kp;
+    this->settings.ki         = ki;
+
+    this->ComputeDiscrete();
+
+    this->inputs.setPoint = setPoint;
 }
 
-void PID::Init(float periode, float kp, float ki, float consigne, float commandeMax)
+void Pid::ComputeDiscrete(void)
 {
-    parametres.periode = periode;
-    parametres.commandeMax = commandeMax;
-    parametres.kp = kp;
-    parametres.ki = ki;
-    PID::CalculerPidDiscret(this);
-
-    entrees.consigne = consigne;
+    this->settings.discrete.num[0] = this->settings.ki * this->settings.period / 2 - this->settings.kp;
+    this->settings.discrete.num[1] = this->settings.ki * this->settings.period / 2 + this->settings.kp;
+    this->settings.discrete.den[0] = -1.0;
+    this->settings.discrete.den[1] = 1.0;
 }
 
-void PID::CalculerCommande()
+void Pid::ComputeCommand(void)
 {
-	//Calcul de l'erreur entre l'�tat et la consigne
-	etat.erreur = entrees.consigne - entrees.mesure;
+    //Calcul de l'error entre l'this->state et la setPoint
+    this->state.error = this->inputs.setPoint - this->inputs.measure;
 
-    etat.commande = (float)( parametres.pidDiscret.num[1]*etat.erreur
-                                 + parametres.pidDiscret.num[0]*etat.erreurPrecedente
-                                 - parametres.pidDiscret.den[0]*etat.commandePrecedente)
-                                 / parametres.pidDiscret.den[1];
+    this->state.command = (float)(this->settings.discrete.num[1] * this->state.error
+                                + this->settings.discrete.num[0] * this->state.lastError
+                                - this->settings.discrete.den[0] * this->state.lastCommand)
+                                / this->settings.discrete.den[1];
 
-    etat.commandePrecedente = etat.commande;
-    etat.commande = MATHS_Saturer(etat.commande, parametres.commandeMax);
-    sortie.commandeNormalisee = etat.commande / parametres.commandeMax;
+    this->state.lastCommand = this->state.command;
+    this->state.command = Maths::Limit(this->state.command, this->settings.maxCommand);
+    this->output = this->state.command / this->settings.maxCommand;
 
-    etat.erreurPrecedente = etat.erreur;
+    this->state.lastError = this->state.error;
 }
 
-float PID::Run(float consigne, float mesure)
+float Pid::Run(float setPoint, float measure)
 {
-    entrees.consigne = consigne;
-    entrees.mesure   = mesure;
+    this->inputs.setPoint = setPoint;
+    this->inputs.measure  = measure;
 
-    CalculerCommande(this);
+    ComputeCommand();
 
-    return sortie.commandeNormalisee;
+    return this->output;
 }
 
-void PID::SetKp(float kp)
+void Pid::SetKp(float kp)
 {
-    parametres.kp = kp;
-    CalculerPidDiscret(this);
+    this->settings.kp = kp;
+    ComputeDiscrete();
 }
 
-void PID::SetKi(float ki)
+void Pid::SetKi(float ki)
 {
-    parametres.ki = ki;
-    CalculerPidDiscret(this);
+    this->settings.ki = ki;
+    ComputeDiscrete();
 }
 
-float PID::GetKp()
+float Pid::GetKp()
 {
-    return parametres.kp;
+    return this->settings.kp;
 }
 
-float PID::GetKi()
+float Pid::GetKi()
 {
-    return parametres.ki;
+    return this->settings.ki;
 }
 
-float PID::GetConsigne()
+float Pid::GetSetPoint()
 {
-    return entrees.consigne;
+    return this->inputs.setPoint;
 }

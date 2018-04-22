@@ -1,8 +1,16 @@
-#ifndef INTERRUPTS_H
-#define INTERRUPTS_H
+#ifndef __INTERRUPTS_H__
+#define __INTERRUPTS_H__
 
-void INTERRUPTS_Disable();
+class Interrupts
+{
 
-void INTERRUPTS_Enable();
+public:
 
-#endif
+    static void Disable();
+
+    static void Enable();
+
+};
+
+
+#endif /* __INTERRUPTS_H__ */

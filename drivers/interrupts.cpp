@@ -1,11 +1,11 @@
 #include <drivers/interrupts.h>
 
-void INTERRUPTS_Disable()
+void Interrupts::Disable(void)
 {
 	return;
 }
 
-void INTERRUPTS_Enable()
+void Interrupts::Enable(void)
 {
 	return;
 }

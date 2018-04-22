@@ -1,56 +1,59 @@
-#ifndef PID_H
-#define PID_H
+#ifndef __PID_H__
+#define __PID_H__
 
 #include <maths/maths.h>
 #include <types.h>
 
-/*************************************/
-/* OBJET STRUCTURE                   */
-/*************************************/
-
-class PID
+class Pid
 {
+
+private:
+
     struct{
-        float periode;      //periode du correcteur
+        float period;      //period du correcteur
        	float kp;
         float ki;
         struct{
             float num[2];	//Parametres du num du correcteur (a=num[i] <=> a*z^i)
             float den[2];
-        }pidDiscret;
-        float commandeMax;  //pour limitation et normalisation
-    }parametres;
+        }discrete;
+        float maxCommand;  //pour limitation et normalisation
+    }settings;
 
     struct{
-        float consigne;         //consigne
-        float mesure;           //mesure de la sortie
-    }entrees;
+        float setPoint;    //consigne
+        float measure;      //mesure de la sortie
+    }inputs;
 
     struct{
-        float erreur;
-        float erreurPrecedente;     //pour equations de récurrence
-        float commande;
-        float commandePrecedente;   //pour equation de récurrence
-    }etat;
+        float error;
+        float lastError;     //pour equations de récurrence
+        float command;
+        float lastCommand;   //pour equation de récurrence
+    }state;
 
-    struct{
-        float commandeNormalisee;
-    }sortie;
+    float output;
 
-    PID(float periode, float kp, float ki, float consigne, float commandeMax);
+    void ComputeDiscrete();
 
-    float PID_Run(float consigne, float mesure);
+    void ComputeCommand(void);
 
-    void PID_SetKp(float kp);
+public :
 
-    void PID_SetKi(float ki);
+    Pid(float period, float kp, float ki, float setPoint, float maxCommand);
 
-    float PID_GetKp();
+    float Run(float setPoint, float measure);
 
-    float PID_GetKi();
+    void  SetKp(float kp);
 
-    float PID_GetConsigne();
+    void  SetKi(float ki);
+
+    float GetKp();
+
+    float GetKi();
+
+    float GetSetPoint();
 };
 
 
-#endif
+#endif /* __PID_H__ */
