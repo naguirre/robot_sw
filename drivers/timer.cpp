@@ -1,4 +1,4 @@
-#include <timer/timer.h>
+#include <drivers/timer.h>
 
 #include <sys/time.h>
 #include <signal.h>
@@ -12,7 +12,7 @@ void SYSTIME_Handler (int signum);
 
 void SYSTIME_Init()
 {
-    static BOOL estInitilise = FALSE;
+    static bool estInitilise = false;
     struct sigaction sa;
     struct itimerval timer;
 
@@ -32,7 +32,7 @@ void SYSTIME_Init()
         sa.sa_handler = SYSTIME_Handler;
         sigaction(SIGALRM, &sa, 0);
 
-        // timer expires after this->resolution sec
+        // timer expires after priv->resolution sec
         timer.it_value.tv_sec = 0;
         timer.it_value.tv_usec = systime.resolution * 1e6 ;
 
@@ -42,11 +42,11 @@ void SYSTIME_Init()
 
         setitimer(ITIMER_REAL, &timer, 0);
 
-        estInitilise = TRUE;
+        estInitilise = true;
     }
 }
 
-void TIMER_Init (TIMER * this, float duration, void (*callback)(void))
+void TIMER_Init (TIMER * priv, float duration, void (*callback)(void))
 {
     uint32_t start_time;
 
@@ -59,24 +59,24 @@ void TIMER_Init (TIMER * this, float duration, void (*callback)(void))
     
     start_time = systime.nbTicks;
     
-    this->callback    = callback;
-    this->elapsed     = FALSE;
-    this->endTime     = start_time + TICKS_OF_SEC (duration);
-    this->duration    = TICKS_OF_SEC (duration);
+    priv->callback    = callback;
+    priv->elapsed     = false;
+    priv->endTime     = start_time + TICKS_OF_SEC (duration);
+    priv->duration    = TICKS_OF_SEC (duration);
     
-    systime.timers[systime.nbTimer] = this;
+    systime.timers[systime.nbTimer] = priv;
 
     systime.nbTimer++;
 }
     
-BOOL TIMER_Scutation (TIMER * this)
+bool TIMER_Scutation (TIMER * priv)
 {
-    if (this->elapsed)
+    if (priv->elapsed)
     {
-        this->elapsed = FALSE;
-        return TRUE;
+        priv->elapsed = false;
+        return true;
     }
-    return TRUE;
+    return true;
 }
 
 void SYSTIME_Handler (int signum)
@@ -99,7 +99,7 @@ void SYSTIME_Handler (int signum)
             timer = systime.timers[i];
             if(systime.nbTicks >= timer->endTime) {
                 timer->endTime += timer->duration;
-                timer->elapsed = TRUE;
+                timer->elapsed = true;
                 if (timer->callback != NULL)
                 {
                     (*timer->callback)();

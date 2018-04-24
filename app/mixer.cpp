@@ -1,24 +1,38 @@
 #include <app/mixer.h>
-#include <app/interfaces.h>
+#include <app/robot.h>
 
-void MIXER_AppliquerCommandeDroite(float commande)
+Mixer::Mixer(void)
 {
-    DEPLACEMENT_INTERFACES_SetPuissance(DEPLACEMENT_MOTEUR_DROITE, commande);
+    this->hBridges[Robot::MOTOR_RIGHT] = new HBridge(Robot::MOTOR_RIGHT);
+    this->hBridges[Robot::MOTOR_LEFT] = new HBridge(Robot::MOTOR_LEFT);
 }
 
-void MIXER_AppliquerCommandeGauche(float commande)
+Mixer::~Mixer(void)
 {
-    DEPLACEMENT_INTERFACES_SetPuissance(DEPLACEMENT_MOTEUR_GAUCHE, commande);
+    delete this->hBridges[Robot::MOTOR_RIGHT];
+    delete this->hBridges[Robot::MOTOR_LEFT];
 }
 
-void MIXER_AppliquerCommandeDroiteGauche(float commandeDroite, float commandeGauche)
+void Mixer::ApplyRightCommand(float command)
 {
-    MIXER_AppliquerCommandeDroite(commandeDroite);
-    MIXER_AppliquerCommandeGauche(commandeGauche);
+    command = Maths::Limit(command, 1.0);
+    this->hBridges[Robot::MOTOR_RIGHT]->SetCommand(command);
 }
 
-void MIXER_AppliquerCommandePolaire(float commandeLongitudinale, float commandeAngulaire)
+void Mixer::ApplyLeftCommand(float command)
 {
-    MIXER_AppliquerCommandeDroite(commandeLongitudinale + commandeAngulaire);
-    MIXER_AppliquerCommandeGauche(commandeLongitudinale - commandeAngulaire);
+    command = Maths::Limit(command, 1.0);
+    this->hBridges[Robot::MOTOR_LEFT]->SetCommand(command);
+}
+
+void Mixer::ApplyRightLeftCommand(float rightCommand, float leftCommand)
+{
+    ApplyRightCommand(rightCommand);
+    ApplyLeftCommand(leftCommand);
+}
+
+void Mixer::ApplyPolarCommand(float longitudinalCommand, float angularCommand)
+{
+    ApplyRightCommand(longitudinalCommand + angularCommand);
+    ApplyLeftCommand(longitudinalCommand - angularCommand);
 }

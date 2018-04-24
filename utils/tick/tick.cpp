@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-uint32_t TICK_Get()
+uint32_t Tick::GetMillis(void)
 {
     struct timeval tv;
 	gettimeofday(&tv, NULL);

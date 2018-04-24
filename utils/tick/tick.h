@@ -1,8 +1,16 @@
-#ifndef _TICK_H
-#define _TICK_H
+#ifndef __TICK_H__
+#define __TICK_H__
 
 #include <types.h>
 
-uint32_t TICK_Get();
+class Tick
+{
+
+public:
+    
+    static uint32_t GetMillis();
+
+};
+
 
 #endif

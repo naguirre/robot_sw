@@ -1,11 +1,11 @@
 #include <drivers/pwm.h>
 
-PWM::PWM(PWM_CHANNEL channel)
+Pwm::Pwm(Pwm::Channel channel)
 {
 	return;
 }
 
-void PWM::ChangerRapportCyclique(float rapport)
+void Pwm::SetDutyCycle(float duty)
 {
 	return;
 }

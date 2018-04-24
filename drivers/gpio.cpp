@@ -1,21 +1,21 @@
 #include "drivers/gpio.h"
 
-GPIO::GPIO(GPIO_PORT port, GPIO_PIN pin, GPIO_DIRECTION direction)
+Gpio::Gpio(Gpio::Port port, Gpio::Pin pin, Gpio::Direction direction)
 {
 	return;
 }
 
-GPIO_ETAT GPIO::Read()
+Gpio::State Gpio::Read()
 {
-	return LOW;
+	return Gpio::LOW;
 }
 
-void GPIO::Write(GPIO_ETAT etat)
+void Gpio::Write(Gpio::State state)
 {
 	return;
 }
 
-void GPIO::Toggle()
+void Gpio::Toggle(void)
 {
 	return;
 }

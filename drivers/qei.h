@@ -3,28 +3,25 @@
 
 #include <types.h>
 
-/*************************************/
-/* TYPES, TYPEDEFS, MACROS, DEFINES  */
-/*************************************/
-
-typedef enum{
-    QEI0,
-    QEI1,
-    QEI2,
-    QEI3,
-}QEI_CHANNEL;
-
-/*************************************/
-/* OBJET STRUCTURE                   */
-/*************************************/
-
-class QEI
+class Qei
 {
-    QEI_CHANNEL channel;
 
-    QEI(QEI_CHANNEL channel);
+public:
 
-    uint16_t GetNombrePas();
+    typedef enum {
+        CHANNEL0,
+        CHANNEL1,
+        CHANNEL2,
+        CHANNEL3,
+    } Channel;
+
+    Qei(Qei::Channel channel);
+
+    uint16_t GetStepsCount();
+
+private:
+
+    Qei::Channel channel;
 };
 
 #endif /* __QEI_H__ */

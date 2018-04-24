@@ -1,49 +1,47 @@
 #ifndef __GPIO_H__
 #define __GPIO_H__
 
-/*************************************/
-/* TYPES, TYPEDEFS, MACROS, DEFINES  */
-/*************************************/
 
-typedef enum{
-    PORTA,
-    PORTB,
-    PORTC,
-    PORTD,
-    PORTF,
-    PORTE,
-}GPIO_PORT;
-
-typedef unsigned char GPIO_PIN;
-
-typedef enum{
-    OUTPUT = 0,
-    INPUT  = 1,
-}GPIO_DIRECTION;
-
-typedef enum{
-    LOW  = 0,
-    HIGH = 1,
-}GPIO_ETAT;
-
-/*************************************/
-/* OBJET STRUCTURE                   */
-/*************************************/
-
-class GPIO
+class Gpio
 {
-    GPIO_PORT port;
-    GPIO_PIN  pin;
-    GPIO_DIRECTION direction;
-    GPIO_ETAT etat;
 
-    GPIO(GPIO_PORT port, GPIO_PIN pin, GPIO_DIRECTION direction);
+public:
+    typedef enum {
+        PORTA,
+        PORTB,
+        PORTC,
+        PORTD,
+        PORTF,
+        PORTE,
+    } Port;
 
-    GPIO_ETAT Read();
+    typedef unsigned char Pin;
 
-    void Write(GPIO_ETAT etat);
+    typedef enum {
+        OUTPUT = 0,
+        INPUT = 1,
+    } Direction;
+
+    typedef enum {
+        LOW = 0,
+        HIGH = 1,
+    } State;
+
+    Gpio(Gpio::Port port, Gpio::Pin pin, Gpio::Direction direction);
+
+    Gpio::State Read();
+
+    void Write(Gpio::State state);
 
     void Toggle();
+
+private:
+
+    Gpio::Port      port;
+    Gpio::Pin       pin;
+    Gpio::Direction direction;
+    Gpio::State     state;
+
 };
 
 #endif /* __GPIO_H__ */
