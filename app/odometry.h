@@ -11,6 +11,8 @@
 
 #include <hal/encoder.h>
 
+#include <simu/SimuMotor.h>
+
 /*************************************/
 /* DEFINES                           */
 /*************************************/
@@ -32,6 +34,7 @@ class Odometry
 private:
 
     Encoder * encoders[2];
+    SimuMotor * simuMotors[2];
 
     struct{
         float period;
@@ -63,6 +66,8 @@ private:
 public:
 
     Odometry(float period);
+
+    Odometry(float period, SimuMotor * simuMotorRight, SimuMotor * simuMotorLeft);
 
     ~Odometry(void);
 

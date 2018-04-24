@@ -22,7 +22,7 @@ void init()
 {
     INF("Start init");
 
-    robot = new Robot(PERIODE_ORDONNANCEUR);
+    robot = new Robot(PERIODE_ORDONNANCEUR, true);
 
     INF("Init done");
 }
@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 {
     init();
 
-    robot->Translate(100.0);
+    robot->Translate(1.0);
 
     while (true)
     {

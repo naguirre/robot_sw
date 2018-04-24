@@ -12,6 +12,8 @@
 #include <app/movement_longitudinal.h>
 #include <app/movement_angular.h>
 
+#include <simu/SimuMotor.h>
+
 class Robot
 {
 
@@ -29,6 +31,7 @@ private:
     Movement             * currentMovement;
     AngularMovement      * angularMovement;
     LongitudinalMovement * longitudinalMovement;
+    SimuMotor            * simuMotors[2];
 
 public:
 
@@ -38,7 +41,7 @@ public:
         MOTOR_MAX,
     }Motor;
 
-    Robot(float period);
+    Robot(float period, bool simu);
     
     void Run(void);
 
