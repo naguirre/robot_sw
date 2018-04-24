@@ -11,20 +11,21 @@ class Encoder
 
 private:
 
-    Qei * qei;   //Abstraction du périph QEI utilisé par le codeur
+    Qei * qei;   // QEI peripheral abstraction
     
     struct{
-        float    reduction;     // Réducteur entre l'arbre de sortie du moteur et l'axe du codeur
-        uint16_t stepsCount;    // Nombre de pas par tour du codeur
-        float    scaleFactor;   // Rapport entre un pas de codeur et une portion d'angle
-        float    period;        // Période d'acquisition des données en secondes (pour calcul de speed)
+        float    reduction;     // Reduction between motor output axis and encodeur axis
+        uint16_t stepsCount;    // Number of encodeur steps
+        float    scaleFactor;   // Distance driven by a wheel for one encodeur step
+        float    period;        // sampling period
     }settings;
     
     struct{
-        float    angle;         // angle absolu de l'arbre du moteur en degrés
-        float    speed;         // en degré/seconde
+        float    angle;         // absolute angle (without mod_2_pi) driven by wheel (rad)
+        float    speed;         // (rad/s)
     }state;
 
+    // Hardware mapping
     const Qei::Channel QEI_CHANNELS[2] = {Qei::CHANNEL0, Qei::CHANNEL1};
 
     void ComputeScaleFactor();

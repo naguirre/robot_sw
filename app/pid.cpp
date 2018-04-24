@@ -22,7 +22,7 @@ void Pid::ComputeDiscrete(void)
 
 void Pid::ComputeCommand(void)
 {
-    //Calcul de l'error entre l'this->state et la setPoint
+    // Compute the error between the state and the setPoint
     this->state.error = this->inputs.setPoint - this->inputs.measure;
 
     this->state.command = (float)(this->settings.discrete.num[1] * this->state.error

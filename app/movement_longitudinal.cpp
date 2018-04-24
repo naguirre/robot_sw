@@ -1,5 +1,5 @@
 #include <app/movement_longitudinal.h>
-#include <stdio.h>
+#include <logs/logs.h>
 
 LongitudinalMovement::LongitudinalMovement(SpeedController *longitudinalSpeedController, PositionController *longitudinalPositionController,
                                            SpeedController *angularSpeedController, PositionController *angularPositionController) : 
@@ -43,10 +43,9 @@ bool LongitudinalMovement::CheckDone()
 
 void LongitudinalMovement::StateOnGoing()
 {
-    //On signale le changement d'etat
     if (FirstTime())
     {
-        fprintf(stderr, "Longitudinal | On Going\n");
+        INF("Longitudinal | On Going");
         this->blockingCount = 0;
     }
 
@@ -65,7 +64,7 @@ void LongitudinalMovement::StateAlmostDone(void)
 {
     if (FirstTime())
     {
-        fprintf(stderr, "Longitudinal | Almost done\n");
+        INF("Longitudinal | Almost done");
     }
 
     if (CheckDone())
@@ -78,7 +77,7 @@ void LongitudinalMovement::StateDone(void)
 {
     if (FirstTime())
     {
-        fprintf(stderr, "Longitudinal| Done\n");
+        INF("Longitudinal| Done");
     }
 }
 
@@ -86,7 +85,7 @@ void LongitudinalMovement::StateBlocked(void)
 {
     if (FirstTime())
     {
-        fprintf(stderr, "Longitudinal | Blocked\n");
+        INF("Longitudinal | Blocked");
         Stop();
     }
 }
@@ -95,7 +94,7 @@ void LongitudinalMovement::StateStop(void)
 {
     if (FirstTime())
     {
-        fprintf(stderr, "Longitudinal | Stop\n");
+        INF("Longitudinal | Stop");
     }
 }
 

@@ -1,5 +1,5 @@
 #include <app/robot.h>
-#include <stdio.h>
+#include <logs/logs.h>
 
 #define LONGITUNAL_MAX_SPEED            1.2
 #define LONGITUNAL_MAX_ACCELERATION     4.0
@@ -25,8 +25,6 @@
 
 Robot::Robot(float period)
 {
-
-    //Initialisation des membres
     this->odometry = new Odometry(period);
     this->mixer = new Mixer();
 
@@ -63,6 +61,8 @@ void Robot::Run(void)
     this->currentMovement->Update(this->odometry->GetLongitudinalPosition(), this->odometry->GetLongitudinalSpeed(),
                                   this->odometry->GetAngularPosition(), this->odometry->GetAngularSpeed(),
                                   this->odometry->GetX(), this->odometry->GetY(), this->odometry->GetHeading());
+
+    this->currentMovement->Run();
 
     this->mixer->ApplyPolarCommand(longitudinalCommand, angularCommand);
 }

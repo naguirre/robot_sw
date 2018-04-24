@@ -6,16 +6,15 @@ StateMachine::StateMachine(int state_init, int default_state, int nb_states) :
     current_state(state_init),
     last_state(state_init),
     timer(Tick::GetMillis()),
-    start_wait_duration(0),
+    nb_states(nb_states),
     timeout(0),
-    default_state(default_state),
-    nb_states(nb_states)
+    start_wait_duration(0),
+    default_state(default_state)
 {
 }    
  
 void StateMachine::Engine(void)
-{
-    // tempo de travail si besoin pour l automate
+{ 
     if (Tick::GetMillis() - timer > this->start_wait_duration)
     {
         this->waiting_start = false;
@@ -26,25 +25,26 @@ void StateMachine::Engine(void)
         this->timeout_occured = true;
     }
 
-    // appel de la fonction correspondante a l etat courant
     if (this->current_state < this->nb_states)
     {
+        // Call the current state method
         const StateStruct * pStateMap = GetStateMap();
         (this->*pStateMap[this->current_state].pStateFunc)();
     }
     else
     {
-        this->current_state = this->default_state; //au cas ou bug
+        // Fallback
+        this->current_state = this->default_state; 
     }
 }
 
 void StateMachine::ChangeState(int new_state, int start_wait_duration, int timeout)
 {
-    if(new_state < nb_states)                             // on verifie value correcte pour le nouvel etat
+    if(new_state < nb_states)                             // check the new state value integrity
     {
-        this->last_state          = this->current_state;  // on sauvegarde l'etat courant
-        this->current_state       = new_state;            // on renseigne le nouvel etat
-        this->first_time          = true;                 // on positionne le booleen pour signifier le 1er acces a l etat
+        this->last_state          = this->current_state;  // store the current state
+        this->current_state       = new_state;            // update the new state
+        this->first_time          = true;                 // set the bool to indicate first time in this state
         this->timer               = Tick::GetMillis();
         this->start_wait_duration = start_wait_duration;
         this->timeout             = timeout;
@@ -53,7 +53,7 @@ void StateMachine::ChangeState(int new_state, int start_wait_duration, int timeo
     }
     else
     {
-        this->current_state = this->default_state; //au cas ou value en dehors des etats connus
+        this->current_state = this->default_state; // fallback
     }
 }
 
@@ -61,11 +61,13 @@ void StateMachine::LastState(void)
 {
     uint8_t tmp;
 
-    //permutation entre last_state et current_state
+    // switch last_state and current_state
     tmp                 = this->last_state;
     this->last_state    = this->current_state;
     this->current_state = tmp;
-    this->first_time    = true;    //on positionne le booleen pour signifier le 1er acces a l etat
+
+    // Set the bool to indicate first time in this state
+    this->first_time    = true;
 }
 
 bool StateMachine::WaitingStartDone(void)

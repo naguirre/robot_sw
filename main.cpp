@@ -7,7 +7,7 @@
 
 #include <app/robot.h>
 
-TIMER ordonnanceur;
+#include <logs/logs.h>
 
 #define PERIODE_ORDONNANCEUR        (0.01)
 
@@ -20,10 +20,11 @@ void run()
 
 void init()
 {
+    INF("Start init");
+
     robot = new Robot(PERIODE_ORDONNANCEUR);
 
-    //On lance l'ordonnanceur
-    TIMER_Init(&ordonnanceur, PERIODE_ORDONNANCEUR, &run);
+    INF("Init done");
 }
 
 int main(int argc, char **argv)
@@ -34,9 +35,10 @@ int main(int argc, char **argv)
 
     while (true)
     {
-        usleep(10);
+        usleep(10000);
+        run();
     }
-    
+
     return 0;
 }
 

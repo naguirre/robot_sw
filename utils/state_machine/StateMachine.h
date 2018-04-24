@@ -25,13 +25,13 @@ private:
     const int  nb_states;
     int  current_state;
     int  last_state;
-    int  timer;                // horloge à l'arrivée dans l'état actuel
+    int  timer;                // tick when arrived in current state
     int  timeout;
-    bool first_time;           // premier passage dans l'état actuel
-    bool timeout_occured;      // en timeout ?
-    int  start_wait_duration;  // pour attente avant de commencer action
+    bool first_time;           // first time in current state
+    bool timeout_occured;      // in timeout ?
+    int  start_wait_duration;  // optionnal wait before executing state action
     bool waiting_start;
-    int  default_state;        // en cas d'etat incoherent
+    int  default_state;        // case of bad current state value
 };
  
 typedef void (StateMachine::*StateFunc)(void);

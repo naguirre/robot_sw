@@ -10,26 +10,26 @@ class Pid
 private:
 
     struct{
-        float period;      //period du correcteur
+        float period;      //PID period 
        	float kp;
         float ki;
         struct{
-            float num[2];	//Parametres du num du correcteur (a=num[i] <=> a*z^i)
-            float den[2];
+            float num[2];   // Settings of discrete controller numerator (a=num[i] <=> a*z^i)
+            float den[2];   // Settings of discrete controller denominator (a=num[i] <=> a*z^i)
         }discrete;
-        float maxCommand;  //pour limitation et normalisation
+        float maxCommand;   // to limit and normalize the command
     }settings;
 
     struct{
-        float setPoint;    //consigne
-        float measure;      //mesure de la sortie
+        float setPoint;     // setpoint
+        float measure;      // output measure
     }inputs;
 
     struct{
         float error;
-        float lastError;     //pour equations de récurrence
+        float lastError;    // for recurrency equation
         float command;
-        float lastCommand;   //pour equation de récurrence
+        float lastCommand;  // for recurrency equation
     }state;
 
     float output;

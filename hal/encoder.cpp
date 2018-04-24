@@ -1,17 +1,19 @@
 #include <hal/encoder.h>
 #include <maths/maths.h>
+#include <logs/logs.h>
 
 Encoder::Encoder(uint8_t idMotor, uint16_t stepsCount, float reduction, float period)
 {
     this->state.angle = 0.0;
+    this->state.speed = 0.0;
 
-    this->settings.stepsCount = QEI_CHANNELS[idMotor];
+    this->settings.stepsCount = stepsCount;
     this->settings.reduction  = reduction;
     this->settings.period     = period;
 
     this->qei = new Qei(QEI_CHANNELS[idMotor]);
 
-    //Calcul de la distance représentée par un pas
+    // Distance driven by the wheel for one encodeur step
     ComputeScaleFactor();
 }
 

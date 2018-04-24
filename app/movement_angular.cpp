@@ -1,6 +1,5 @@
 #include <app/movement_angular.h>
-#include <stdio.h>
-
+#include <logs/logs.h>
 
 AngularMovement::AngularMovement(SpeedController *longitudinalSpeedController, PositionController *longitudinalPositionController,
                                  SpeedController *angularSpeedController, PositionController *angularPositionController) :
@@ -47,10 +46,9 @@ bool AngularMovement::CheckDone()
 
 void AngularMovement::StateOnGoing()
 {
-    //On signale le changement d'etat
     if (FirstTime())
     {
-        fprintf(stderr, "Angular | On Going\n");
+        INF("Angular | On Going");
         this->blockingCount = 0;
     }
 
@@ -69,7 +67,7 @@ void AngularMovement::StateAlmostDone(void)
 {
     if (FirstTime())
     {
-        fprintf(stderr, "Angular | Almost done\n");
+        INF("Angular | Almost done");
     }
     
     if (CheckDone())
@@ -82,7 +80,7 @@ void AngularMovement::StateDone(void)
 {
     if (FirstTime())
     {
-        fprintf(stderr, "Angular| Done\n");
+        INF("Angular| Done");
     }
 }
 
@@ -91,7 +89,7 @@ void AngularMovement::StateBlocked(void)
     if (FirstTime())
     {
         Stop();
-        fprintf(stderr, "Angular | Blocked\n");
+        INF("Angular | Blocked");
     }
 }
 
@@ -99,7 +97,7 @@ void AngularMovement::StateStop(void)
 {
     if (FirstTime())
     {
-        fprintf(stderr, "Angular | Stop\n");
+        INF("Angular | Stop");
     }
 }
 
