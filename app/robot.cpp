@@ -12,14 +12,14 @@
 #define LONGITUNAL_DISTANCE_KP          2200.0
 #define LONGITUNAL_DISTANCE_KI          0.0
 
-#define ANGULAR_MAX_SPEED               8.0
+#define ANGULAR_MAX_SPEED               12.0
 #define ANGULAR_MAX_ACCELERATION        40.0
 
-#define ANGULAR_SPEED_MAX               400.0
-#define ANGULAR_SPEED_KP                18.0
+#define ANGULAR_SPEED_MAX               600.0
+#define ANGULAR_SPEED_KP                20.0
 #define ANGULAR_SPEED_KI                0.0
 
-#define ANGULAR_DISTANCE_MAX            600.0
+#define ANGULAR_DISTANCE_MAX            800.0
 #define ANGULAR_DISTANCE_KP             480.0
 #define ANGULAR_DISTANCE_KI             0.0
 
@@ -68,6 +68,10 @@ void Robot::Run(void)
     float angularCommand;
 
     this->odometry->Run();
+
+    DBG("mesure %f;%f %f;%f %f;%f;%f", this->odometry->GetLongitudinalPosition(), this->odometry->GetLongitudinalSpeed(),
+                                       this->odometry->GetAngularPosition(), this->odometry->GetAngularSpeed(),
+                                       this->odometry->GetX(), this->odometry->GetY(), this->odometry->GetHeading());
 
     this->currentMovement->Update(this->odometry->GetLongitudinalPosition(), this->odometry->GetLongitudinalSpeed(),
                                   this->odometry->GetAngularPosition(), this->odometry->GetAngularSpeed(),

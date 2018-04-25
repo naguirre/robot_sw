@@ -7,9 +7,9 @@ Movement::Movement(SpeedController *longitudinalSpeedController, PositionControl
     longitudinalCommand(0.0),
     longitudinalSpeedController(longitudinalSpeedController),
     longitudinalPositionController(longitudinalPositionController),
-    currentLongitudinalController(longitudinalPositionController),
     angularSpeedController(angularSpeedController),
     angularPositionController(angularPositionController),
+    currentLongitudinalController(longitudinalPositionController),
     currentAngularController(angularPositionController)
 {
 }
@@ -27,7 +27,7 @@ void Movement::Update(float longitudinalPosition, float longitudinalSpeed,
     this->heading              = heading;
 
     this->longitudinalCommand = this->currentLongitudinalController->Run(longitudinalSpeed, longitudinalPosition);
-    this->angularCommand = this->currentAngularController->Run(angularSpeed, angularSpeed);
+    this->angularCommand = this->currentAngularController->Run(angularSpeed, angularPosition);
 }
 
 float Movement::GetAngularCommand()

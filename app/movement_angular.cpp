@@ -38,7 +38,10 @@ bool AngularMovement::CheckAlmostDone()
 
 bool AngularMovement::CheckDone()
 {
-    return Maths::InsideBoundary(this->angularSpeed, ANGULAR_MOVEMENT_DONE_THRESHOLD);
+    float setPoint = this->currentAngularController->GetSetPoint();
+
+    return (Maths::InsideBoundary(this->angularSpeed, ANGULAR_MOVEMENT_DONE_SPEED_THRESHOLD) &&
+            Maths::InsideBoundary(this->angularPosition - setPoint, ANGULAR_MOVEMENT_DONE_POSITION_THRESHOLD));
 }
 
 /******** State machine ***********/

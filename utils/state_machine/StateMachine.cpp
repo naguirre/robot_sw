@@ -2,58 +2,59 @@
 #include <state_machine/StateMachine.h>
 #include <tick/tick.h>
  
-StateMachine::StateMachine(int state_init, int default_state, int nb_states) :
-    current_state(state_init),
-    last_state(state_init),
+StateMachine::StateMachine(unsigned int stateInit, unsigned int defaultState, unsigned int nbStates) :
+    nbStates(nbStates),
+    currentState(stateInit),
+    lastState(stateInit),
     timer(Tick::GetMillis()),
-    nb_states(nb_states),
     timeout(0),
-    start_wait_duration(0),
-    default_state(default_state)
+    startWaitDuration(0),
+    waitingStart(0),
+    defaultState(defaultState)
 {
 }    
- 
+
 void StateMachine::Engine(void)
 { 
-    if (Tick::GetMillis() - timer > this->start_wait_duration)
+    if (Tick::GetMillis() - timer > this->startWaitDuration)
     {
-        this->waiting_start = false;
+        this->waitingStart = false;
     }
 
     if (Tick::GetMillis() - timer > timeout)
     {
-        this->timeout_occured = true;
+        this->timeoutOccured = true;
     }
 
-    if (this->current_state < this->nb_states)
+    if (this->currentState < this->nbStates)
     {
         // Call the current state method
-        const StateStruct * pStateMap = GetStateMap();
-        (this->*pStateMap[this->current_state].pStateFunc)();
+        const StateFunc * pStateMap = GetStateMap();
+        (this->*pStateMap[this->currentState])();
     }
     else
     {
         // Fallback
-        this->current_state = this->default_state; 
+        this->currentState = this->defaultState; 
     }
 }
 
-void StateMachine::ChangeState(int new_state, int start_wait_duration, int timeout)
+void StateMachine::ChangeState(unsigned int newState, int startWaitDuration, int timeout)
 {
-    if(new_state < nb_states)                             // check the new state value integrity
+    if(newState < nbStates)                              // check the new state value integrity
     {
-        this->last_state          = this->current_state;  // store the current state
-        this->current_state       = new_state;            // update the new state
-        this->first_time          = true;                 // set the bool to indicate first time in this state
-        this->timer               = Tick::GetMillis();
-        this->start_wait_duration = start_wait_duration;
-        this->timeout             = timeout;
-        this->waiting_start       = true;
-        this->timeout_occured     = false;
+        this->lastState          = this->currentState;   // store the current state
+        this->currentState       = newState;             // update the new state
+        this->firstTime          = true;                 // set the bool to indicate first time in this state
+        this->timer              = Tick::GetMillis();
+        this->startWaitDuration  = startWaitDuration;
+        this->timeout            = timeout;
+        this->waitingStart       = true;
+        this->timeoutOccured     = false;
     }
     else
     {
-        this->current_state = this->default_state; // fallback
+        this->currentState = this->defaultState; // fallback
     }
 }
 
@@ -61,30 +62,30 @@ void StateMachine::LastState(void)
 {
     uint8_t tmp;
 
-    // switch last_state and current_state
-    tmp                 = this->last_state;
-    this->last_state    = this->current_state;
-    this->current_state = tmp;
+    // switch lastState and currentState
+    tmp                = this->lastState;
+    this->lastState    = this->currentState;
+    this->currentState = tmp;
 
     // Set the bool to indicate first time in this state
-    this->first_time    = true;
+    this->firstTime    = true;
 }
 
 bool StateMachine::WaitingStartDone(void)
 {
-    return !this->waiting_start;
+    return !this->waitingStart;
 }
 
 bool StateMachine::CheckTimeout(void)
 {
-    return this->timeout_occured;
+    return this->timeoutOccured;
 }
 
 bool StateMachine::FirstTime(void)
 {
-    if (this->first_time)
+    if (this->firstTime)
     {
-        this->first_time = false;
+        this->firstTime = false;
         return true;
     }
     else
@@ -93,12 +94,12 @@ bool StateMachine::FirstTime(void)
     }
 }
 
-int StateMachine::GetCurrentState(void)
+unsigned int StateMachine::GetCurrentState(void)
 {
-    return this->current_state;
+    return this->currentState;
 }
 
-int StateMachine::GetLastState(void)
+unsigned int StateMachine::GetLastState(void)
 {
-    return last_state;
+    return lastState;
 }
