@@ -1,5 +1,6 @@
 #include <app/mixer.h>
 #include <app/robot.h>
+#include <logs/logs.h>
 
 Mixer::Mixer(void)
 {
@@ -69,6 +70,7 @@ void Mixer::ApplyRightLeftCommand(float rightCommand, float leftCommand)
 
 void Mixer::ApplyPolarCommand(float longitudinalCommand, float angularCommand)
 {
+    DBG("Motors commands %f;%f", longitudinalCommand + angularCommand, longitudinalCommand - angularCommand)
     ApplyRightCommand(longitudinalCommand + angularCommand);
     ApplyLeftCommand(longitudinalCommand - angularCommand);
 }

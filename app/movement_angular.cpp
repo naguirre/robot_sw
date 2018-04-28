@@ -3,12 +3,29 @@
 
 AngularMovement::AngularMovement(SpeedController *longitudinalSpeedController, PositionController *longitudinalPositionController,
                                  SpeedController *angularSpeedController, PositionController *angularPositionController) :
-    StateMachine(ST_MOVEMENT_STOP, ST_MOVEMENT_STOP, ST_MOVEMENT_ONGOING + 1), 
     Movement(longitudinalSpeedController, longitudinalPositionController, angularSpeedController, angularPositionController)
 {
 }
 
-/******** CONDITIONS DE TRANSITIONS ***********/
+void AngularMovement::ComputeInitialRotation(void)
+{
+    return;
+}
+
+void AngularMovement::UpdateSetPoints(void)
+{
+    return;
+}
+
+bool AngularMovement::CheckRotationDone(void)
+{
+    return false;
+}
+
+bool AngularMovement::CheckRotationBlocked(void)
+{
+    return false;
+}
 
 bool AngularMovement::CheckBlocked()
 {
@@ -58,75 +75,17 @@ bool AngularMovement::CheckDone()
     }
 }
 
-/******** State machine ***********/
-
-
-void AngularMovement::StateOnGoing()
-{
-    if (FirstTime())
-    {
-        INF("Angular | On Going");
-        this->blockingCount = 0;
-    }
-
-    if(CheckBlocked())
-    {
-        ChangeState(ST_MOVEMENT_BLOCKED, 0, ANGULAR_MOVEMENT_STATE_MACHINE_TIMEOUT);
-    }
-    
-    if (CheckAlmostDone())
-    {
-        ChangeState(ST_MOVEMENT_ALMOST_DONE, 0, ANGULAR_MOVEMENT_STATE_MACHINE_TIMEOUT);
-    }
-}
-
-void AngularMovement::StateAlmostDone(void)
-{
-    if (FirstTime())
-    {
-        INF("Angular | Almost done");
-    }
-    
-    if (CheckDone())
-    {
-        ChangeState(ST_MOVEMENT_DONE, 0, ANGULAR_MOVEMENT_STATE_MACHINE_TIMEOUT);
-    }
-}
-
-void AngularMovement::StateDone(void)
-{
-    if (FirstTime())
-    {
-        INF("Angular| Done");
-    }
-}
-
-void AngularMovement::StateBlocked(void)
-{
-    if (FirstTime())
-    {
-        Stop();
-        INF("Angular | Blocked");
-    }
-}
-
-void AngularMovement::StateStop(void)
-{
-    if (FirstTime())
-    {
-        INF("Angular | Stop");
-    }
-}
-
 void AngularMovement::Rotate(float angle)
 {
     this->currentLongitudinalController = this->longitudinalPositionController;
     this->currentAngularController = this->angularPositionController;
 
+    this->currentLongitudinalController->SetMaxSpeed(LONGITUDINAL_MOVEMENT_SPEED_MAX);
     this->currentLongitudinalController->DefineSetPoint(this->longitudinalPosition);
+    this->currentAngularController->SetMaxSpeed(ANGULAR_MOVEMENT_SPEED_MAX);
     this->currentAngularController->DefineSetPoint(this->angularPosition + angle);
 
-    this->ChangeState(ST_MOVEMENT_ONGOING, 0, ANGULAR_MOVEMENT_STATE_MACHINE_TIMEOUT);
+    ChangeState(ST_MOVEMENT_ONGOING, 0, MOVEMENT_STATE_MACHINE_TIMEOUT);
 }
 
 void AngularMovement::PointTowards(float x, float y)
@@ -143,50 +102,14 @@ void AngularMovement::PointTowardsBack(float x, float y)
     Rotate(angle);
 }
 
-void AngularMovement::TangentCircle(float x, float y, AngularMovement::Direction direction)
-{
-    float angle;
-
-    if (direction == AngularMovement::COUNTERCLOCKWISE)
-    {
-        angle = Maths::mod2pi(Maths::DeltaHeading(this->heading, this->x, this->y, x, y) - M_PI_2);
-    }
-    else
-    {
-        angle = Maths::mod2pi(Maths::DeltaHeading(this->heading, this->x, this->y, x, y) + M_PI_2);
-    }
-
-    Rotate(angle);
-}
-
 void AngularMovement::InfiniteRotation(float speed)
 {
     this->currentLongitudinalController = this->longitudinalPositionController;
     this->currentAngularController = this->angularSpeedController;
 
+    this->currentLongitudinalController->SetMaxSpeed(LONGITUDINAL_MOVEMENT_SPEED_MAX);
     this->currentLongitudinalController->DefineSetPoint(this->longitudinalPosition);
     this->currentAngularController->DefineSetPoint(speed);
 
-    this->ChangeState(ST_MOVEMENT_ONGOING, 0, ANGULAR_MOVEMENT_STATE_MACHINE_TIMEOUT);
-}
-
-void AngularMovement::Stop(void)
-{
-    this->currentLongitudinalController = this->longitudinalPositionController;
-    this->currentAngularController = this->angularPositionController;
-
-    this->currentLongitudinalController->DefineSetPoint(this->longitudinalPosition);
-    this->currentAngularController->DefineSetPoint(this->angularPosition);
-
-    this->ChangeState(ST_MOVEMENT_STOP, 0, 0);
-}
-
-Movement::State AngularMovement::GetState(void)
-{
-    return (Movement::State)(this->GetCurrentState());
-}
-
-void AngularMovement::Run(void)
-{
-    Engine();
+    ChangeState(ST_MOVEMENT_ONGOING, 0, MOVEMENT_STATE_MACHINE_TIMEOUT);
 }

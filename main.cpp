@@ -41,6 +41,22 @@ int main(int argc, char **argv)
     int command_index = 0;
 
     Robot * robot = new Robot(PERIODE_ORDONNANCEUR, true);
+
+    robot->GoThrough(0.8, 0.5, -1.0);
+
+    while (robot->CheckMovementAlmostDone() == false)
+    {
+        usleep(10000);
+        robot->Run();
+    }
+
+    robot->GoTo(1.2, 1.2, -0.5);
+
+    while (robot->CheckMovementDone() == false)
+    {
+        usleep(10000);
+        robot->Run();
+    }
  
     while ((command_index < ROBOT_COMMAND_NUM) && (commands[command_index] != COMMAND_NONE))
     {
@@ -74,6 +90,22 @@ int main(int argc, char **argv)
         }
 
         command_index++;
+    }
+
+    robot->SplittedGoTo(0.0, 0.0, 1.0);
+
+    while (robot->CheckMovementDone() == false)
+    {
+        usleep(10000);
+        robot->Run();
+    }
+
+    robot->PointTowards(0.0, 1.0);
+
+    while (robot->CheckMovementDone() == false)
+    {
+        usleep(10000);
+        robot->Run();
     }
     
     return 0;

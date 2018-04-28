@@ -58,6 +58,15 @@ Robot::Robot(float period, bool simu)
 
     this->longitudinalMovement = new LongitudinalMovement(this->longitudinalSpeedController, this->longitudinalPositionController,
                                                           this->angularSpeedController, this->angularPositionController);
+    
+    this->goToMovement = new GoToMovement(this->longitudinalSpeedController, this->longitudinalPositionController,
+                                          this->angularSpeedController, this->angularPositionController);
+
+    this->splittedGoToMovement = new SplittedGoToMovement(this->longitudinalSpeedController, this->longitudinalPositionController,
+                                                          this->angularSpeedController, this->angularPositionController);
+
+    this->goThroughMovement = new GoThroughMovement(this->longitudinalSpeedController, this->longitudinalPositionController,
+                                                    this->angularSpeedController, this->angularPositionController);
 
     this->Stop();
 }
@@ -107,6 +116,50 @@ void Robot::Rotate(float angle)
     this->currentMovement = this->angularMovement;
 }
 
+void Robot::PointTowards(float x, float y)
+{
+    this->angularMovement->Update(this->odometry->GetLongitudinalPosition(), this->odometry->GetLongitudinalSpeed(),
+                                  this->odometry->GetAngularPosition(), this->odometry->GetAngularSpeed(),
+                                  this->odometry->GetX(), this->odometry->GetY(), this->odometry->GetHeading());
+
+    this->angularMovement->PointTowards(x, y);
+
+    this->currentMovement = this->angularMovement;
+}
+
+void Robot::GoTo(float x, float y, float speed)
+{
+    this->goToMovement->Update(this->odometry->GetLongitudinalPosition(), this->odometry->GetLongitudinalSpeed(),
+                               this->odometry->GetAngularPosition(), this->odometry->GetAngularSpeed(),
+                               this->odometry->GetX(), this->odometry->GetY(), this->odometry->GetHeading());
+
+    this->goToMovement->GoTo(x, y, speed);
+
+    this->currentMovement = this->goToMovement;
+}
+
+void Robot::SplittedGoTo(float x, float y, float speed)
+{
+    this->splittedGoToMovement->Update(this->odometry->GetLongitudinalPosition(), this->odometry->GetLongitudinalSpeed(),
+                               this->odometry->GetAngularPosition(), this->odometry->GetAngularSpeed(),
+                               this->odometry->GetX(), this->odometry->GetY(), this->odometry->GetHeading());
+
+    this->splittedGoToMovement->GoTo(x, y, speed);
+
+    this->currentMovement = this->splittedGoToMovement;
+}
+
+void Robot::GoThrough(float x, float y, float speed)
+{
+    this->goThroughMovement->Update(this->odometry->GetLongitudinalPosition(), this->odometry->GetLongitudinalSpeed(),
+                               this->odometry->GetAngularPosition(), this->odometry->GetAngularSpeed(),
+                               this->odometry->GetX(), this->odometry->GetY(), this->odometry->GetHeading());
+
+    this->goThroughMovement->GoThrough(x, y, speed);
+
+    this->currentMovement = this->goThroughMovement;
+}
+
 void Robot::Stop(void)
 {
     this->longitudinalMovement->Update(this->odometry->GetLongitudinalPosition(), this->odometry->GetLongitudinalSpeed(),
@@ -118,9 +171,16 @@ void Robot::Stop(void)
     this->currentMovement = this->longitudinalMovement;
 }
 
+
 bool Robot::CheckMovementOngoing()
 {
-    return (this->currentMovement->GetState() == Movement::ST_MOVEMENT_ONGOING);
+    return ((this->currentMovement->GetState() == Movement::ST_MOVEMENT_ONGOING)
+         || (this->currentMovement->GetState() == Movement::ST_MOVEMENT_INITIAL_ROTATION));
+}
+
+bool Robot::CheckMovementAlmostDone()
+{
+    return (this->currentMovement->GetState() == Movement::ST_MOVEMENT_ALMOST_DONE);
 }
 
 bool Robot::CheckMovementDone()

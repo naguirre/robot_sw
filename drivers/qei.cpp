@@ -2,7 +2,7 @@
 
 Qei::Qei(Qei::Channel channel)
 {
-    return;
+    this->channel = channel;
 }
 
 uint16_t Qei::GetStepsCount()
