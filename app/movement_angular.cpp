@@ -33,12 +33,29 @@ bool AngularMovement::CheckAlmostDone()
 {
     float setPoint = this->currentAngularController->GetSetPoint();
 
-    return Maths::InsideBoundary(this->angularPosition - setPoint, ANGULAR_MOVEMENT_ALMOST_DONE_THRESHOLD);
+    if (this->currentAngularController == this->angularPositionController)
+    {
+        return Maths::InsideBoundary(this->angularPosition - setPoint, ANGULAR_MOVEMENT_ALMOST_DONE_THRESHOLD);
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool AngularMovement::CheckDone()
 {
-    return Maths::InsideBoundary(this->angularSpeed, ANGULAR_MOVEMENT_DONE_THRESHOLD);
+    float setPoint = this->currentAngularController->GetSetPoint();
+
+    if (this->currentAngularController == this->angularPositionController)
+    {
+        return (Maths::InsideBoundary(this->angularSpeed, ANGULAR_MOVEMENT_DONE_SPEED_THRESHOLD) &&
+                Maths::InsideBoundary(this->angularPosition - setPoint, ANGULAR_MOVEMENT_DONE_POSITION_THRESHOLD));
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /******** State machine ***********/

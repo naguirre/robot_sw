@@ -27,7 +27,7 @@
 
 #define LOGS_LEVEL          LOGS_DBG_LEVEL
 
-#define LOGS_OUTPUT         stderr
+#define LOGS_OUTPUT         stdout
 
 /******************************************************************************
 *
@@ -41,6 +41,7 @@
         fprintf(LOGS_OUTPUT, LOGS_COLOR_RED "CRI" LOGS_COLOR_RESET " %s:%d %s() ", __FILE__, __LINE__, __FUNCTION__);   \
         fprintf(LOGS_OUTPUT, __VA_ARGS__);                                                                              \
         fprintf(LOGS_OUTPUT, "\n");                                                                                     \
+        fflush(LOGS_OUTPUT);                                                                                            \
     }
 
 #define ERR(...)                                                                                                      \
@@ -49,6 +50,7 @@
         fprintf(LOGS_OUTPUT, LOGS_COLOR_RED "ERR" LOGS_COLOR_RESET " %s:%d %s() ", __FILE__, __LINE__, __FUNCTION__); \
         fprintf(LOGS_OUTPUT, __VA_ARGS__);                                                                            \
         fprintf(LOGS_OUTPUT, "\n");                                                                                   \
+        fflush(LOGS_OUTPUT);                                                                                            \
     }
 
 #define WRN(...)                                                                                                        \
@@ -57,6 +59,7 @@
         fprintf(LOGS_OUTPUT, LOGS_COLOR_ORANGE "WRN" LOGS_COLOR_RESET " %s:%d %s() ", __FILE__, __LINE__, __FUNCTION__);\
         fprintf(LOGS_OUTPUT, __VA_ARGS__);                                                                              \
         fprintf(LOGS_OUTPUT, "\n");                                                                                     \
+        fflush(LOGS_OUTPUT);                                                                                            \
     }
 
 #define INF(...)                                                                                                       \
@@ -65,6 +68,7 @@
         fprintf(LOGS_OUTPUT, LOGS_COLOR_BLUE "INF" LOGS_COLOR_RESET " %s:%d %s() ", __FILE__, __LINE__, __FUNCTION__); \
         fprintf(LOGS_OUTPUT, __VA_ARGS__);                                                                             \
         fprintf(LOGS_OUTPUT, "\n");                                                                                    \
+        fflush(LOGS_OUTPUT);                                                                                            \
     }
 
 #define DBG(...)                                                                                                        \
@@ -73,6 +77,7 @@
         fprintf(LOGS_OUTPUT, LOGS_COLOR_WHITE "DBG" LOGS_COLOR_RESET " %s:%d %s() ", __FILE__, __LINE__, __FUNCTION__); \
         fprintf(LOGS_OUTPUT, __VA_ARGS__);                                                                              \
         fprintf(LOGS_OUTPUT, "\n");                                                                                     \
+        fflush(LOGS_OUTPUT);                                                                                            \
     }
 
 #endif

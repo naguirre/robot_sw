@@ -9,6 +9,8 @@
 #include <maths/maths.h>
 #include <hal/h_bridge.h>
 
+#include <simu/SimuMotor.h>
+
 /*************************************/
 /* FONCTIONS                         */
 /*************************************/
@@ -18,7 +20,8 @@ class Mixer
 
 private:
 
-    HBridge * hBridges[2];
+    HBridge   * hBridges[2];
+    SimuMotor * simuMotors[2];
 
     void ApplyRightCommand(float command);
 
@@ -27,6 +30,8 @@ private:
 public:
 
     Mixer();
+
+    Mixer(SimuMotor * simuMotorRight, SimuMotor * simuMotorLeft);
 
     ~Mixer();
 

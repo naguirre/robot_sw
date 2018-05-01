@@ -31,12 +31,31 @@ bool LongitudinalMovement::CheckAlmostDone()
 {
     float setPoint = this->currentLongitudinalController->GetSetPoint();
 
-    return Maths::InsideBoundary(this->longitudinalPosition - setPoint, LONGITUDINAL_MOVEMENT_ALMOST_DONE_THRESHOLD);
+    if (this->currentLongitudinalController == this->longitudinalPositionController)
+    {
+        return Maths::InsideBoundary(this->longitudinalPosition - setPoint, LONGITUDINAL_MOVEMENT_ALMOST_DONE_THRESHOLD);
+    }
+    else
+    {
+        // A speed controlled movement (ie infinite) is never almost done
+        return false;
+    }
 }
 
 bool LongitudinalMovement::CheckDone()
 {
-    return Maths::InsideBoundary(this->longitudinalSpeed, LONGITUDINAL_MOVEMENT_DONE_THRESHOLD);
+    float setPoint = this->currentLongitudinalController->GetSetPoint();
+
+    if (this->currentLongitudinalController == this->longitudinalPositionController)
+    {
+        return (Maths::InsideBoundary(this->longitudinalSpeed, LONGITUDINAL_MOVEMENT_DONE_SPEED_THRESHOLD) &&
+                Maths::InsideBoundary(this->longitudinalPosition - setPoint, LONGITUDINAL_MOVEMENT_DONE_POSITION_THRESHOLD));
+    }
+    else
+    {
+        /* A speed controlled movement (ie infinite) is never done */
+        return false;
+    }
 }
 
 /******** State machine ***********/

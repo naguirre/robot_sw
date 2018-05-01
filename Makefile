@@ -5,7 +5,7 @@ detected_OS := $(shell uname -s)
 
 APP_C_SRC    = $(shell find . -type f -name '*.cpp')
 APP_OBJ      = $(APP_C_SRC:.cpp=.o)
-APP_FLAGS    = -Wall -g
+APP_FLAGS    = -Wall -g -std=c++11
 APP_INC      = . utils
 
 # libraries

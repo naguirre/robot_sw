@@ -11,34 +11,70 @@
 
 #define PERIODE_ORDONNANCEUR        (0.01)
 
-Robot * robot;
-
-void run()
+typedef enum
 {
-    robot->Run();
-}
+    COMMAND_NONE = 0,
+    COMMAND_LEFT,
+    COMMAND_RIGHT,
+    COMMAND_FORWARD,
+    COMMAND_BACKWARD
+}RobotCommand;
 
-void init()
-{
-    INF("Start init");
+#define ROBOT_COMMAND_NUM           10
+#define ROBOT_COMMAND_DISTANCE      0.2
 
-    robot = new Robot(PERIODE_ORDONNANCEUR);
-
-    INF("Init done");
-}
+RobotCommand commands[ROBOT_COMMAND_NUM] = {
+    COMMAND_FORWARD,
+    COMMAND_LEFT,
+    COMMAND_FORWARD,
+    COMMAND_RIGHT,
+    COMMAND_RIGHT,
+    COMMAND_BACKWARD,
+    COMMAND_LEFT,
+    COMMAND_FORWARD,
+    COMMAND_FORWARD,
+    COMMAND_RIGHT
+};
 
 int main(int argc, char **argv)
 {
-    init();
+    int command_index = 0;
 
-    robot->Translate(100.0);
-
-    while (true)
+    Robot * robot = new Robot(PERIODE_ORDONNANCEUR, true);
+ 
+    while ((command_index < ROBOT_COMMAND_NUM) && (commands[command_index] != COMMAND_NONE))
     {
-        usleep(10000);
-        run();
-    }
+        switch (commands[command_index])
+        {
+            case COMMAND_LEFT:
+                robot->Rotate(PI_2);
+                break;
 
+            case COMMAND_RIGHT:
+                robot->Rotate(-PI_2);
+                break;
+
+            case COMMAND_FORWARD:
+                robot->Translate(ROBOT_COMMAND_DISTANCE);
+                break;
+
+            case COMMAND_BACKWARD:
+                robot->Translate(-ROBOT_COMMAND_DISTANCE);
+                break;
+
+            default:
+                exit(1);
+                break;
+        }
+        
+        while (robot->CheckMovementDone() == false)
+        {
+            usleep(10000);
+            robot->Run();
+        }
+
+        command_index++;
+    }
+    
     return 0;
 }
-

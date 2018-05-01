@@ -1,0 +1,25 @@
+{
+    "source" : {
+        "type" : "program_output",
+        "params" : {
+            "command" : "../../robot",
+            "args" : []
+        },
+        "regex" : "\\S+ \\S+\\.cpp:[0-9]+ .+ mesure \\S+ (\\S+) \\S+"
+    },
+    "channels" : {
+        "angle" : {
+            "unit" : "rad" 
+        },
+        "speed" : {
+            "unit" : "rad/s" 
+        }
+    },
+    "scope" : {
+        "width" : 1280,
+        "height" : 800,
+        "x_depth" : 2000,
+        "y_min" : -500.0,
+        "y_max" :  500.0
+    }
+}

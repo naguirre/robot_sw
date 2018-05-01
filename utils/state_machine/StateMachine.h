@@ -2,54 +2,56 @@
 #define STATE_MACHINE_H
 
 #include <stdlib.h>
- 
-struct StateStruct;
+#include <types.h>
+
+class StateMachine;
+
+typedef void (StateMachine::*StateFunc)(void);
  
 // base class for state machines
 class StateMachine 
 {
+
 public:
-    StateMachine(int state_init, int default_state, int nb_states);
+
+    StateMachine(unsigned int stateInit, unsigned int defaultState, unsigned int nbStates);
     virtual ~StateMachine() {}
+
 protected:
+
     void Engine(void);
-    void ChangeState(int new_state, int start_wait_duration, int timeout);
+    void ChangeState(unsigned int newState, int startWaitDuration, int timeout);
     void LastState(void);
     bool WaitingStartDone(void);
     bool CheckTimeout(void);
     bool FirstTime(void);
-    int  GetCurrentState(void);
-    int  GetLastState(void);
-    virtual const StateStruct* GetStateMap() = 0;
+    unsigned int GetCurrentState(void);
+    unsigned int GetLastState(void);
+    virtual const StateFunc* GetStateMap() = 0;
+
 private:
-    const int  nb_states;
-    int  current_state;
-    int  last_state;
-    int  timer;                // tick when arrived in current state
-    int  timeout;
-    bool first_time;           // first time in current state
-    bool timeout_occured;      // in timeout ?
-    int  start_wait_duration;  // optionnal wait before executing state action
-    bool waiting_start;
-    int  default_state;        // case of bad current state value
-};
- 
-typedef void (StateMachine::*StateFunc)(void);
-struct StateStruct 
-{
-    StateFunc pStateFunc;
+
+    const unsigned int  nbStates;
+    unsigned int        currentState;
+    unsigned int        lastState;
+    int                 timer;                // tick when arrived in current state
+    uint32_t            timeout;
+    bool                firstTime;            // first time in current state
+    bool                timeoutOccured;       // in timeout ?
+    uint32_t            startWaitDuration;    // optionnal wait before executing state action
+    bool                waitingStart;
+    unsigned int        defaultState;         // case of bad current state value
 };
  
 #define BEGIN_STATE_MAP \
-public:\
-const StateStruct* GetStateMap() {\
-    static const StateStruct StateMap[] = { 
+const StateFunc* GetStateMap() {\
+    static const StateFunc StateMap[] = { 
  
 #define STATE_MAP_ENTRY(entry)\
-    { reinterpret_cast<StateFunc>(&entry) },
+    reinterpret_cast<StateFunc>(&entry),
  
 #define END_STATE_MAP \
-    { NULL }\
+    NULL\
     }; \
     return &StateMap[0]; }
  
