@@ -11,6 +11,7 @@
 #include <app/mixer.h>
 #include <app/movement_longitudinal.h>
 #include <app/movement_angular.h>
+#include <app/movement_complex.h>
 
 #include <simu/SimuMotor.h>
 
@@ -21,16 +22,16 @@ private:
 
     Odometry             * odometry;
     Mixer                * mixer;
-    Movement             * movement;
     PositionController   * longitudinalPositionController;
     PositionController   * angularPositionController;
     SpeedController      * longitudinalSpeedController;
     SpeedController      * angularSpeedController;
-    Controller           * longitudinalController;
-    Controller           * angularController;
     Movement             * currentMovement;
     AngularMovement      * angularMovement;
     LongitudinalMovement * longitudinalMovement;
+    GoToMovement         * goToMovement;
+    SplittedGoToMovement * splittedGoToMovement;
+    GoThroughMovement    * goThroughMovement;
     SimuMotor            * simuMotors[2];
 
 public:
@@ -49,9 +50,19 @@ public:
 
     void Rotate(float angle);
 
+    void PointTowards(float x, float y);
+
+    void GoTo(float x, float y, float speed);
+
+    void SplittedGoTo(float x, float y, float speed);
+
+    void GoThrough(float x, float y, float speed);
+
     void Stop(void);
 
     bool CheckMovementOngoing();
+
+    bool CheckMovementAlmostDone();
 
     bool CheckMovementDone();
 

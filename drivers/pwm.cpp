@@ -2,10 +2,11 @@
 
 Pwm::Pwm(Pwm::Channel channel)
 {
-	return;
+	this->channel = channel;
+    this->dutyCycle = 0.0;
 }
 
 void Pwm::SetDutyCycle(float duty)
 {
-	return;
+	this->dutyCycle = duty;
 }

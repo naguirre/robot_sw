@@ -1,5 +1,6 @@
 #include <app/controller_position.h>
 #include <maths/maths.h>
+#include <logs/logs.h>
 
 PositionController::PositionController(float period, float maxSpeed, float maxAcceleration,
                                        float maxSpeedCommand, float kpSpeed, float kiSpeed,
