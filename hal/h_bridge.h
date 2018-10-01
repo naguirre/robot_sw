@@ -20,8 +20,8 @@ private:
 
     // Hardware mapping
     const Pwm::Channel PWM_CHANNELS[2] = {Pwm::CHANNEL0, Pwm::CHANNEL1};
-    const Gpio::Port   SENS_PORTS[2]   = {Gpio::PORTB, Gpio::PORTB};
-    const Gpio::Pin    SENS_PINS[2]    = {0, 2};
+  //const Gpio::Port   SENS_PORTS[2]   = {Gpio::PORTB, Gpio::PORTB};
+  // const Gpio::Pin    SENS_PINS[2]    = {0, 2};
 
 public:
 

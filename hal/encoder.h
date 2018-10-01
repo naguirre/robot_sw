@@ -27,7 +27,7 @@ private:
 
     // Hardware mapping
     const Qei::Channel QEI_CHANNELS[2] = {Qei::CHANNEL0, Qei::CHANNEL1};
-
+    
     void ComputeScaleFactor();
 
 public:

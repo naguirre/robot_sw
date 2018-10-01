@@ -1,17 +1,16 @@
 #include <hal/encoder.h>
 #include <maths/maths.h>
 #include <logs/logs.h>
-
+#include "drivers/gpio.h"
 Encoder::Encoder(uint8_t idMotor, uint16_t stepsCount, float reduction, float period)
 {
     this->state.angle = 0.0;
     this->state.speed = 0.0;
-
     this->settings.stepsCount = stepsCount;
     this->settings.reduction  = reduction;
     this->settings.period     = period;
 
-    this->qei = new Qei(QEI_CHANNELS[idMotor]);
+    this->qei = new Qei(QEI_CHANNELS[idMotor], idMotor ? (Gpio::Pin)4 : (Gpio::Pin)5);
 
     // Distance driven by the wheel for one encodeur step
     ComputeScaleFactor();
